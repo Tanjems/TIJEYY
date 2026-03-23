@@ -5,7 +5,13 @@ from flask import Flask, render_template, request
 from flask_socketio import SocketIO, emit, join_room, leave_room
 
 app = Flask(__name__)
-socketio = SocketIO(app, async_mode='eventlet', cors_allowed_origins='*')
+socketio = SocketIO(
+    app,
+    async_mode='eventlet',
+    cors_allowed_origins='*',
+    logger=True,
+    engineio_logger=True
+)
 
 rooms = {}
 
