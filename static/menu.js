@@ -1,5 +1,6 @@
 function createGame() {
     alert("Create Game clicked"); 
+    console.log("Create Game clicked");
     socket.emit('create_game');
 }
 function showJoinScreen() {
