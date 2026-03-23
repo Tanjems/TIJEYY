@@ -1,5 +1,5 @@
-const socket = io({
-    transports: ["websocket"],
+const socket = io(window.location.origin, {
+    transports: ["websocket"]
 });
 
 let myRoom = null;
