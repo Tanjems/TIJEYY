@@ -1,8 +1,4 @@
-function createGame() {
-    alert("Create Game clicked"); 
-    console.log("Create Game clicked");
-    socket.emit('create_game');
-}
+function createGame() { socket.emit('create_game'); }
 function showJoinScreen() {
     document.getElementById('menu-screen').style.display = 'none';
     document.getElementById('join-screen').style.display = 'flex';
