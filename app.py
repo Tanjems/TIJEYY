@@ -1,3 +1,6 @@
+import eventlet
+eventlet.monkey_patch()   
+
 import random
 import string
 import time
@@ -6,7 +9,7 @@ from flask import Flask, render_template, request
 from flask_socketio import SocketIO, emit, join_room, leave_room
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'ping-pong-secret-key-2026'   # ← REQUIRED for production
+app.config['SECRET_KEY'] = 'ping-pong-secret-key-2026'
 
 socketio = SocketIO(app, async_mode='eventlet', cors_allowed_origins='*')
 
@@ -73,7 +76,6 @@ def countdown_and_start(room):
 def index():
     return render_template('index.html')
 
-# ====================== SocketIO Events (unchanged) ======================
 @socketio.on('create_game')
 def handle_create_game():
     room = generate_room_code()
