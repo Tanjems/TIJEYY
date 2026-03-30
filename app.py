@@ -1,17 +1,14 @@
 import random
 import string
 import time
+import os
 from flask import Flask, render_template, request
 from flask_socketio import SocketIO, emit, join_room, leave_room
 
 app = Flask(__name__)
-socketio = SocketIO(
-    app,
-    async_mode='eventlet',
-    cors_allowed_origins='*',
-    logger=True,
-    engineio_logger=True
-)
+app.config['SECRET_KEY'] = 'ping-pong-secret-key-2026'   # ← REQUIRED for production
+
+socketio = SocketIO(app, async_mode='eventlet', cors_allowed_origins='*')
 
 rooms = {}
 
@@ -21,22 +18,19 @@ def generate_room_code():
 def reset_ball(state):
     state['ball_x'] = 400
     state['ball_y'] = 300
-    state['ball_vx'] = 0  # initially stopped
-    state['ball_vy'] = 0
+    state['ball_vx'] = random.choice([-5, 5])
+    state['ball_vy'] = random.randint(-3, 3)
 
 def game_loop(room):
-    if room not in rooms:
-        return
+    if room not in rooms: return
     state = rooms[room]['game_state']
     while rooms[room].get('running', False):
         state['ball_x'] += state['ball_vx']
         state['ball_y'] += state['ball_vy']
 
-        # Bounce off top and bottom
         if state['ball_y'] <= 10 or state['ball_y'] >= 590:
             state['ball_vy'] *= -1
 
-        # Bounce off paddles
         if state['ball_x'] <= 30 and state['paddle1_y'] <= state['ball_y'] <= state['paddle1_y'] + 100:
             state['ball_vx'] *= -1
             hit = (state['ball_y'] - state['paddle1_y']) / 100 - 0.5
@@ -46,35 +40,25 @@ def game_loop(room):
             hit = (state['ball_y'] - state['paddle2_y']) / 100 - 0.5
             state['ball_vy'] = hit * 8
 
-        # Check scoring
-        if state['ball_x'] < 0:  # Player 2 scores
+        if state['ball_x'] < 0:
             state['score2'] += 1
             reset_ball(state)
-            socketio.emit('game_update', state, room=room)  # send paused ball
-            socketio.sleep(1)  # wait 1 second so players can see
-        # start moving again
-            state['ball_vx'] = random.choice([-5, 5])
-            state['ball_vy'] = random.randint(-3, 3)
+            time.sleep(1)
             if state['score2'] >= 5:
-             socketio.emit('game_over', {'winner': 'Player 2'}, room=room)
-            rooms[room]['running'] = False
-            break
-
-        elif state['ball_x'] > 800:  # Player 1 scores
+                emit('game_over', {'winner': 'Player 2'}, room=room)
+                rooms[room]['running'] = False
+                break
+        elif state['ball_x'] > 800:
             state['score1'] += 1
             reset_ball(state)
-            socketio.emit('game_update', state, room=room)  # send paused ball
-            socketio.sleep(1)  # wait 1 second
-            state['ball_vx'] = random.choice([-5, 5])
-            state['ball_vy'] = random.randint(-3, 3)
-        if state['score1'] >= 5:
-            socketio.emit('game_over', {'winner': 'Player 1'}, room=room)
-            rooms[room]['running'] = False
-            break
+            time.sleep(1)
+            if state['score1'] >= 5:
+                emit('game_over', {'winner': 'Player 1'}, room=room)
+                rooms[room]['running'] = False
+                break
 
-        # Send updated game state to clients
-        socketio.emit('game_update', state, room=room)
-        socketio.sleep(0.0167)  # ~60 FPS
+        emit('game_update', state, room=room)
+        time.sleep(0.0167)
 
 def countdown_and_start(room):
     for i in range(3, 0, -1):
@@ -83,12 +67,13 @@ def countdown_and_start(room):
     socketio.emit('countdown', {'number': 'GO!'}, room=room)
     time.sleep(0.8)
     rooms[room]['running'] = True
-    socketio.start_background_task(game_loop, room)   # <-- fixed here
+    socketio.start_background_task(game_loop, room)
 
 @app.route('/')
 def index():
     return render_template('index.html')
 
+# ====================== SocketIO Events (unchanged) ======================
 @socketio.on('create_game')
 def handle_create_game():
     room = generate_room_code()
@@ -106,24 +91,16 @@ def handle_create_game():
 @socketio.on('join_game')
 def handle_join_game(data):
     room = data.get('room')
-    sid = request.sid
     if room in rooms and len(rooms[room]['players']) < 2:
+        sid = request.sid
         rooms[room]['players'][sid] = {'side': 'right'}
         join_room(room)
-
         emit('joined', {'room': room}, to=sid)
         emit('player_assigned', {'side': 'right'}, to=sid)
-
-        # Also notify Player 1 to stop waiting
-        other_sid = [s for s in rooms[room]['players'] if s != sid][0]
-        emit('opponent_joined', {}, to=other_sid)
-
         if len(rooms[room]['players']) == 2:
-            # Small delay to ensure both clients are joined
-            socketio.sleep(0.1)
             socketio.start_background_task(countdown_and_start, room)
     else:
-        emit('join_error', {'message': 'Invalid or full room code'}, to=sid)
+        emit('join_error', {'message': 'Invalid or full room code'}, to=request.sid)
 
 @socketio.on('update_paddle')
 def handle_update_paddle(data):
@@ -143,7 +120,7 @@ def handle_restart(data):
         state['score1'] = state['score2'] = 0
         reset_ball(state)
         rooms[room]['running'] = False
-        socketio.start_background_task(countdown_and_start, room)   # <-- also fixed
+        socketio.start_background_task(countdown_and_start, room)
 
 @socketio.on('leave_game')
 def handle_leave_game(data):
@@ -170,3 +147,6 @@ def handle_disconnect():
                 del rooms[room]
             break
 
+if __name__ == '__main__':
+    port = int(os.environ.get('PORT', 5000))
+    socketio.run(app, host='0.0.0.0', port=port, debug=False)
