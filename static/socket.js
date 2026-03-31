@@ -60,15 +60,18 @@ socket.on('join_error', (d) => {
 });
 
 socket.on('show_ready_buttons', () => {
+    console.log("✅ SHOW READY BUTTONS received");
     document.getElementById('ready-overlay').style.display = 'flex';
 });
 
 socket.on('both_ready', () => {
+    console.log("✅ BOTH READY - starting ball");
     document.getElementById('ready-overlay').style.display = 'none';
     document.getElementById('pause-btn').style.display = 'block';
 });
 
 socket.on('point_scored', (state) => {
+    console.log("✅ Point scored - showing ready again");
     gameState = state;
     document.getElementById('ready-overlay').style.display = 'flex';
     document.getElementById('pause-btn').style.display = 'none';
