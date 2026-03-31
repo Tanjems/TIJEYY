@@ -58,3 +58,23 @@ socket.on('opponent_left', () => {
 socket.on('join_error', (d) => { 
     alert(d.message); 
 });
+
+socket.on('show_ready_buttons', () => {
+    document.getElementById('ready-overlay').style.display = 'flex';
+});
+
+socket.on('both_ready', () => {
+    document.getElementById('ready-overlay').style.display = 'none';
+    document.getElementById('pause-btn').style.display = 'block';
+});
+
+socket.on('point_scored', (state) => {
+    gameState = state;
+    document.getElementById('ready-overlay').style.display = 'flex';
+    document.getElementById('pause-btn').style.display = 'none';
+});
+
+socket.on('game_paused', () => {
+    const btn = document.getElementById('pause-btn');
+    if (btn) btn.textContent = "▶ RESUME";
+});
