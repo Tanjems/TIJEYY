@@ -47,7 +47,10 @@ function exitToMenu() {
 }
 
 function playerReady() {
-    if (myRoom) socket.emit('player_ready', {room: myRoom});
+    if (myRoom) {
+        console.log("🔥 Player clicked READY");
+        socket.emit('player_ready', {room: myRoom});
+    }
     document.getElementById('ready-overlay').style.display = 'none';
 }
 
