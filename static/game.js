@@ -71,4 +71,12 @@ function drawGame() {
     ctx.textAlign = 'center';
     ctx.fillText(gameState.score1 || 0, 200, 80);
     ctx.fillText(gameState.score2 || 0, 600, 80);
+
+    // Paused text
+    if (gameState.paused) {
+        ctx.fillStyle = 'rgba(255,255,255,0.8)';
+        ctx.font = 'bold 60px Arial';
+        ctx.textAlign = 'center';
+        ctx.fillText('PAUSED', 400, 300);
+    }
 }
