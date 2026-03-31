@@ -45,3 +45,20 @@ function exitToMenu() {
     if (myRoom) socket.emit('leave_game', {room: myRoom});
     location.reload();
 }
+
+function playerReady() {
+    if (myRoom) socket.emit('player_ready', {room: myRoom});
+    document.getElementById('ready-overlay').style.display = 'none';
+}
+
+function togglePause() {
+    if (!myRoom) return;
+    const btn = document.getElementById('pause-btn');
+    if (btn.textContent.includes("PAUSE")) {
+        socket.emit('pause_game', {room: myRoom});
+        btn.textContent = "▶ RESUME";
+    } else {
+        socket.emit('resume_game', {room: myRoom});
+        btn.textContent = "⏸ PAUSE";
+    }
+}
