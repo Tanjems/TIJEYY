@@ -1,5 +1,11 @@
-function createGame() { 
-    socket.emit('create_game'); 
+function createGame() {
+    // Instant UI feedback so it doesn't feel frozen
+    document.getElementById('menu-screen').style.display = 'none';
+    document.getElementById('waiting-screen').style.display = 'flex';
+    document.getElementById('room-code-display').textContent = "Creating room...";
+
+    console.log("🔥 Create Game clicked - emitting to server");
+    socket.emit('create_game');
 }
 
 function showJoinScreen() {
@@ -15,7 +21,6 @@ function backFromWaiting() {
     mySide = null;
     gameState = {};
 
-    // Hide waiting screen and return to main menu
     document.getElementById('waiting-screen').style.display = 'none';
     document.getElementById('menu-screen').style.display = 'flex';
 }
