@@ -1,6 +1,3 @@
-import eventlet
-eventlet.monkey_patch()
-
 import random
 import string
 import time
@@ -11,7 +8,8 @@ from flask_socketio import SocketIO, emit, join_room, leave_room
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'ping-pong-secret-key-2026'
 
-socketio = SocketIO(app, async_mode='eventlet', cors_allowed_origins='*')
+# === CHANGED TO THREADING MODE (fixes RLock error) ===
+socketio = SocketIO(app, async_mode='threading', cors_allowed_origins='*')
 
 rooms = {}
 
@@ -21,7 +19,7 @@ def generate_room_code():
 def reset_ball(state):
     state['ball_x'] = 400
     state['ball_y'] = 300
-    state['ball_vx'] = 0          # start stopped
+    state['ball_vx'] = 0
     state['ball_vy'] = 0
 
 def start_ball(state):
@@ -38,7 +36,6 @@ def game_loop(room):
         if state['ball_y'] <= 10 or state['ball_y'] >= 590:
             state['ball_vy'] *= -1
 
-        # Paddle hit
         if state['ball_x'] <= 30 and state['paddle1_y'] <= state['ball_y'] <= state['paddle1_y'] + 100:
             state['ball_vx'] *= -1
             hit = (state['ball_y'] - state['paddle1_y']) / 100 - 0.5
@@ -48,7 +45,6 @@ def game_loop(room):
             hit = (state['ball_y'] - state['paddle2_y']) / 100 - 0.5
             state['ball_vy'] = hit * 8
 
-        # Score
         if state['ball_x'] < 0:
             state['score2'] += 1
             reset_ball(state)
@@ -77,6 +73,7 @@ def game_loop(room):
 def index():
     return render_template('index.html')
 
+# ====================== Socket Events ======================
 @socketio.on('create_game')
 def handle_create_game():
     room = generate_room_code()
@@ -115,7 +112,7 @@ def countdown_and_start(room):
     time.sleep(0.8)
     rooms[room]['running'] = True
     rooms[room]['ready_players'] = set()
-    socketio.emit('show_ready_buttons', room=room)   # new
+    socketio.emit('show_ready_buttons', room=room)
 
 @socketio.on('player_ready')
 def handle_player_ready(data):
@@ -140,7 +137,6 @@ def handle_resume_game(data):
     if room in rooms:
         rooms[room]['paused'] = False
 
-# ... (update_paddle, restart_game, leave_game, disconnect stay the same as last version)
 @socketio.on('update_paddle')
 def handle_update_paddle(data):
     room = data.get('room')
@@ -171,8 +167,6 @@ def handle_leave_game(data):
         leave_room(room)
         del rooms[room]['players'][sid]
         if len(rooms[room]['players']) == 0:
-            if rooms[room].get('running'):
-                rooms[room]['running'] = False
             del rooms[room]
         else:
             socketio.emit('opponent_left', {}, room=room)
