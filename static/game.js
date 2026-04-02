@@ -9,8 +9,18 @@ function initGame() {
     document.addEventListener('keydown', e => keys[e.key.toLowerCase()] = true);
     document.addEventListener('keyup',   e => keys[e.key.toLowerCase()] = false);
 
-    canvas.addEventListener('touchstart', e => { e.preventDefault(); const y = e.touches[0].clientY - canvas.getBoundingClientRect().top; touchDirection = y < 300 ? -1 : 1; }, {passive:false});
-    canvas.addEventListener('touchmove',  e => { e.preventDefault(); const y = e.touches[0].clientY - canvas.getBoundingClientRect().top; touchDirection = y < 300 ? -1 : 1; }, {passive:false});
+    canvas.addEventListener('touchstart', e => { 
+        e.preventDefault(); 
+        const y = e.touches[0].clientY - canvas.getBoundingClientRect().top; 
+        touchDirection = y < 300 ? -1 : 1; 
+    }, {passive:false});
+
+    canvas.addEventListener('touchmove', e => { 
+        e.preventDefault(); 
+        const y = e.touches[0].clientY - canvas.getBoundingClientRect().top; 
+        touchDirection = y < 300 ? -1 : 1; 
+    }, {passive:false});
+
     canvas.addEventListener('touchend', () => touchDirection = 0);
 
     gameLoop();
@@ -18,6 +28,7 @@ function initGame() {
 
 function gameLoop() {
     updateOwnPaddle();
+    updateBallLocally();     // ← THIS IS THE NEW LINE
     drawGame();
     requestAnimationFrame(gameLoop);
 }
@@ -41,6 +52,19 @@ function updateOwnPaddle() {
     if (Math.abs(y - (gameState[key] || 250)) > 0.5) {
         gameState[key] = y;
         socket.emit('update_paddle', {room: myRoom, y: Math.round(y)});
+    }
+}
+
+// === NEW FUNCTION: Local ball movement (makes it move immediately) ===
+function updateBallLocally() {
+    if (!gameState || gameState.ball_vx === undefined) return;
+
+    gameState.ball_x += gameState.ball_vx;
+    gameState.ball_y += gameState.ball_vy;
+
+    // Local wall bounce (for smoothness)
+    if (gameState.ball_y <= 10 || gameState.ball_y >= 590) {
+        gameState.ball_vy *= -1;
     }
 }
 
