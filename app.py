@@ -110,8 +110,13 @@ def countdown_and_start(room):
         time.sleep(1)
     socketio.emit('countdown', {'number': 'GO!'}, room=room)
     time.sleep(0.8)
+    
     rooms[room]['running'] = True
     rooms[room]['ready_players'] = set()
+    
+    # === THIS WAS THE MISSING LINE ===
+    socketio.start_background_task(game_loop, room)
+    
     socketio.emit('show_ready_buttons', room=room)
 
 @socketio.on('player_ready')
@@ -123,9 +128,7 @@ def handle_player_ready(data):
         
         if len(rooms[room]['ready_players']) == 2:
             start_ball(rooms[room]['game_state'])
-            
-            # === THIS IS THE MISSING PART ===
-            # Immediately send the new ball velocity to both players
+            # Immediately send new ball velocity to clients
             socketio.emit('game_update', rooms[room]['game_state'], room=room)
             socketio.emit('both_ready', room=room)
 
