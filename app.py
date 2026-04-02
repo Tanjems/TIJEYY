@@ -120,8 +120,13 @@ def handle_player_ready(data):
     if room in rooms and rooms[room].get('running'):
         sid = request.sid
         rooms[room]['ready_players'].add(sid)
+        
         if len(rooms[room]['ready_players']) == 2:
             start_ball(rooms[room]['game_state'])
+            
+            # === THIS IS THE MISSING PART ===
+            # Immediately send the new ball velocity to both players
+            socketio.emit('game_update', rooms[room]['game_state'], room=room)
             socketio.emit('both_ready', room=room)
 
 @socketio.on('pause_game')
