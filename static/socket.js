@@ -41,7 +41,10 @@ socket.on('countdown', (d) => {
 
 socket.on('game_update', (state) => {
     if (!state) return;
-    gameState = state;
+    
+    // Safer update + logging so we can see what's happening
+    console.log("📡 GAME UPDATE - ball_vx:", state.ball_vx, "ball_vy:", state.ball_vy, "ball_x:", state.ball_x);
+    Object.assign(gameState, state);   // This keeps the same object reference
 });
 
 socket.on('game_over', (d) => {
@@ -65,14 +68,14 @@ socket.on('show_ready_buttons', () => {
 });
 
 socket.on('both_ready', () => {
-    console.log("✅ BOTH READY - starting ball");
+    console.log("✅ BOTH READY - ball should start moving now");
     document.getElementById('ready-overlay').style.display = 'none';
     document.getElementById('pause-btn').style.display = 'block';
 });
 
 socket.on('point_scored', (state) => {
     console.log("✅ Point scored - showing ready again");
-    gameState = state;
+    Object.assign(gameState, state);
     document.getElementById('ready-overlay').style.display = 'flex';
     document.getElementById('pause-btn').style.display = 'none';
 });
