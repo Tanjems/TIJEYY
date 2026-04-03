@@ -36,11 +36,16 @@ def game_loop(room):
         if state['ball_y'] <= 10 or state['ball_y'] >= 590:
             state['ball_vy'] *= -1
 
-        if state['ball_x'] <= 30 and state['paddle1_y'] <= state['ball_y'] <= state['paddle1_y'] + 100:
+        # Paddle collision - Left (only when approaching + within paddle width)
+        if (state['ball_x'] <= 30 and state['ball_x'] >= 15 and
+            state['paddle1_y'] <= state['ball_y'] <= state['paddle1_y'] + 100):
             state['ball_vx'] *= -1
             hit = (state['ball_y'] - state['paddle1_y']) / 100 - 0.5
             state['ball_vy'] = hit * 8
-        if state['ball_x'] >= 770 and state['paddle2_y'] <= state['ball_y'] <= state['paddle2_y'] + 100:
+
+        # Paddle collision - Right (only when approaching + within paddle width)
+        if (state['ball_x'] >= 770 and state['ball_x'] <= 785 and
+            state['paddle2_y'] <= state['ball_y'] <= state['paddle2_y'] + 100):
             state['ball_vx'] *= -1
             hit = (state['ball_y'] - state['paddle2_y']) / 100 - 0.5
             state['ball_vy'] = hit * 8
