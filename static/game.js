@@ -37,7 +37,7 @@ function updateOwnPaddle() {
     if (!mySide || !myRoom || !gameState) return;
     const key = mySide === 'left' ? 'paddle1_y' : 'paddle2_y';
     let y = gameState[key] || 250;
-    const speed = 7;
+    const speed = 8;
 
     if (mySide === 'left') {
         if (keys['w']) y -= speed;
@@ -49,7 +49,7 @@ function updateOwnPaddle() {
     y += touchDirection * speed;
     y = Math.max(0, Math.min(500, y));
 
-    if (Math.abs(y - (gameState[key] || 250)) > 0.5) {
+    if (Math.abs(y - (gameState[key] || 250)) > 0.1) {
         gameState[key] = y;
         socket.emit('update_paddle', {room: myRoom, y: Math.round(y)});
     }
