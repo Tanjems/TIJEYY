@@ -70,8 +70,9 @@ function updateBallLocally() {
         gameState.ball_vy *= -1;
     }
 
-    // Paddle collision - Left
+    // Paddle collision - Left (only when approaching + within paddle width)
     if (gameState.ball_x <= 30 && 
+        gameState.ball_x >= 15 && 
         gameState.paddle1_y <= gameState.ball_y && 
         gameState.ball_y <= gameState.paddle1_y + 100) {
         gameState.ball_vx *= -1;
@@ -79,8 +80,9 @@ function updateBallLocally() {
         gameState.ball_vy = hit * 8;
     }
 
-    // Paddle collision - Right
+    // Paddle collision - Right (only when approaching + within paddle width)
     if (gameState.ball_x >= 770 && 
+        gameState.ball_x <= 785 && 
         gameState.paddle2_y <= gameState.ball_y && 
         gameState.ball_y <= gameState.paddle2_y + 100) {
         gameState.ball_vx *= -1;
