@@ -1,6 +1,5 @@
 import random
 import string
-import time
 import os
 from flask import Flask, render_template, request
 from flask_socketio import SocketIO, emit, join_room, leave_room
@@ -8,8 +7,8 @@ from flask_socketio import SocketIO, emit, join_room, leave_room
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'ping-pong-secret-key-2026'
 
-# === CHANGED TO THREADING MODE (fixes RLock error) ===
-socketio = SocketIO(app, async_mode='threading', cors_allowed_origins='*')
+# === FIXED FOR RENDER.COM (eventlet + socketio.sleep) ===
+socketio = SocketIO(app, async_mode='eventlet', cors_allowed_origins='*')
 
 rooms = {}
 
@@ -36,15 +35,17 @@ def game_loop(room):
         if state['ball_y'] <= 10 or state['ball_y'] >= 590:
             state['ball_vy'] *= -1
 
-        # Paddle collision - Left (only when approaching + within paddle width)
-        if (state['ball_x'] <= 30 and state['ball_x'] >= 15 and
+        # Paddle collision - Left (only when approaching + inside paddle)
+        if (state['ball_vx'] < 0 and 
+            state['ball_x'] <= 30 and state['ball_x'] >= 15 and
             state['paddle1_y'] <= state['ball_y'] <= state['paddle1_y'] + 100):
             state['ball_vx'] *= -1
             hit = (state['ball_y'] - state['paddle1_y']) / 100 - 0.5
             state['ball_vy'] = hit * 8
 
-        # Paddle collision - Right (only when approaching + within paddle width)
-        if (state['ball_x'] >= 770 and state['ball_x'] <= 785 and
+        # Paddle collision - Right (only when approaching + inside paddle)
+        if (state['ball_vx'] > 0 and 
+            state['ball_x'] >= 770 and state['ball_x'] <= 785 and
             state['paddle2_y'] <= state['ball_y'] <= state['paddle2_y'] + 100):
             state['ball_vx'] *= -1
             hit = (state['ball_y'] - state['paddle2_y']) / 100 - 0.5
@@ -55,7 +56,7 @@ def game_loop(room):
             reset_ball(state)
             rooms[room]['ready_players'] = set()
             emit('point_scored', state, room=room)
-            time.sleep(0.8)
+            socketio.sleep(0.8)
             if state['score2'] >= 5:
                 emit('game_over', {'winner': 'Player 2'}, room=room)
                 rooms[room]['running'] = False
@@ -65,14 +66,14 @@ def game_loop(room):
             reset_ball(state)
             rooms[room]['ready_players'] = set()
             emit('point_scored', state, room=room)
-            time.sleep(0.8)
+            socketio.sleep(0.8)
             if state['score1'] >= 5:
                 emit('game_over', {'winner': 'Player 1'}, room=room)
                 rooms[room]['running'] = False
                 break
 
         emit('game_update', state, room=room)
-        time.sleep(0.0167)
+        socketio.sleep(0.0167)   # ← important for eventlet
 
 @app.route('/')
 def index():
@@ -112,16 +113,13 @@ def handle_join_game(data):
 def countdown_and_start(room):
     for i in range(3, 0, -1):
         socketio.emit('countdown', {'number': str(i)}, room=room)
-        time.sleep(1)
+        socketio.sleep(1)
     socketio.emit('countdown', {'number': 'GO!'}, room=room)
-    time.sleep(0.8)
+    socketio.sleep(0.8)
     
     rooms[room]['running'] = True
     rooms[room]['ready_players'] = set()
-    
-    # === THIS WAS THE MISSING LINE ===
     socketio.start_background_task(game_loop, room)
-    
     socketio.emit('show_ready_buttons', room=room)
 
 @socketio.on('player_ready')
@@ -133,7 +131,6 @@ def handle_player_ready(data):
         
         if len(rooms[room]['ready_players']) == 2:
             start_ball(rooms[room]['game_state'])
-            # Immediately send new ball velocity to clients
             socketio.emit('game_update', rooms[room]['game_state'], room=room)
             socketio.emit('both_ready', room=room)
 
