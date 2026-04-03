@@ -58,16 +58,19 @@ function updateOwnPaddle() {
 // === NEW: Local ball movement + paddle collision ===
 function updateBallLocally() {
     if (!gameState || typeof gameState.ball_vx === 'undefined') return;
+    
+    // ←←← ADD THIS LINE (stops local movement after scoring)
+    if (gameState.waitingForReady) return;
 
     gameState.ball_x += gameState.ball_vx;
     gameState.ball_y += gameState.ball_vy;
 
-    // Wall bounce (top/bottom)
+    // Wall bounce
     if (gameState.ball_y <= 10 || gameState.ball_y >= 590) {
         gameState.ball_vy *= -1;
     }
 
-    // Paddle collision - Left paddle (Player 1)
+    // Paddle collision - Left
     if (gameState.ball_x <= 30 && 
         gameState.paddle1_y <= gameState.ball_y && 
         gameState.ball_y <= gameState.paddle1_y + 100) {
@@ -76,7 +79,7 @@ function updateBallLocally() {
         gameState.ball_vy = hit * 8;
     }
 
-    // Paddle collision - Right paddle (Player 2)
+    // Paddle collision - Right
     if (gameState.ball_x >= 770 && 
         gameState.paddle2_y <= gameState.ball_y && 
         gameState.ball_y <= gameState.paddle2_y + 100) {
@@ -85,7 +88,6 @@ function updateBallLocally() {
         gameState.ball_vy = hit * 8;
     }
 }
-
 function drawGame() {
     if (!ctx) return;
     ctx.fillStyle = '#000';
