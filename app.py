@@ -7,7 +7,7 @@ from flask_socketio import SocketIO, emit, join_room, leave_room
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'ping-pong-secret-key-2026'
 
-# FIXED FOR RENDER.COM
+# === MUST be eventlet for Render.com ===
 socketio = SocketIO(app, async_mode='eventlet', cors_allowed_origins='*')
 
 rooms = {}
@@ -28,7 +28,7 @@ def start_ball(state):
 def game_loop(room):
     if room not in rooms: return
     state = rooms[room]['game_state']
-    print(f"[DEBUG] game_loop STARTED for room {room}")   # ← this proves loop is alive
+    print(f"===== GAME LOOP STARTED for room {room} =====")
     
     while rooms[room].get('running', False) and not rooms[room].get('paused', False):
         state['ball_x'] += state['ball_vx']
@@ -37,7 +37,7 @@ def game_loop(room):
         if state['ball_y'] <= 10 or state['ball_y'] >= 590:
             state['ball_vy'] *= -1
 
-        # Paddle collision (same as before - proven safe)
+        # Paddle collision - Left
         if (state['ball_vx'] < 0 and 
             state['ball_x'] <= 30 and state['ball_x'] >= 15 and
             state['paddle1_y'] <= state['ball_y'] <= state['paddle1_y'] + 100):
@@ -45,6 +45,7 @@ def game_loop(room):
             hit = (state['ball_y'] - state['paddle1_y']) / 100 - 0.5
             state['ball_vy'] = hit * 8
 
+        # Paddle collision - Right
         if (state['ball_vx'] > 0 and 
             state['ball_x'] >= 770 and state['ball_x'] <= 785 and
             state['paddle2_y'] <= state['ball_y'] <= state['paddle2_y'] + 100):
@@ -52,41 +53,38 @@ def game_loop(room):
             hit = (state['ball_y'] - state['paddle2_y']) / 100 - 0.5
             state['ball_vy'] = hit * 8
 
-        # === DEBUG PRINTS (only near scoring zone - no spam) ===
-        if state['ball_x'] < 50 or state['ball_x'] > 750 or state['ball_x'] < 0 or state['ball_x'] > 800:
-            print(f"[DEBUG {room}] ball_x={state['ball_x']:.1f} vx={state['ball_vx']:.1f} y={state['ball_y']:.1f} score={state['score1']}-{state['score2']} running={rooms[room]['running']}")
-
+        # Scoring
         if state['ball_x'] < 0:
-            print(f"*** POINT SCORED for Player 2! New score {state['score1']}-{state['score2']+1} ***")
+            print(f"*** POINT for Player 2! Score now {state['score1']}-{state['score2']+1} ***")
             state['score2'] += 1
             reset_ball(state)
             rooms[room]['ready_players'] = set()
-            emit('point_scored', state, room=room)
+            socketio.emit('point_scored', state, room=room)   # ← FIXED
             socketio.sleep(0.8)
             if state['score2'] >= 5:
-                emit('game_over', {'winner': 'Player 2'}, room=room)
+                socketio.emit('game_over', {'winner': 'Player 2'}, room=room)
                 rooms[room]['running'] = False
                 break
         elif state['ball_x'] > 800:
-            print(f"*** POINT SCORED for Player 1! New score {state['score1']+1}-{state['score2']} ***")
+            print(f"*** POINT for Player 1! Score now {state['score1']+1}-{state['score2']} ***")
             state['score1'] += 1
             reset_ball(state)
             rooms[room]['ready_players'] = set()
-            emit('point_scored', state, room=room)
+            socketio.emit('point_scored', state, room=room)   # ← FIXED
             socketio.sleep(0.8)
             if state['score1'] >= 5:
-                emit('game_over', {'winner': 'Player 1'}, room=room)
+                socketio.emit('game_over', {'winner': 'Player 1'}, room=room)
                 rooms[room]['running'] = False
                 break
 
-        emit('game_update', state, room=room)
+        socketio.emit('game_update', state, room=room)   # ← FIXED
         socketio.sleep(0.0167)
 
-# ====================== rest of your routes and socket events (unchanged) ======================
 @app.route('/')
 def index():
     return render_template('index.html')
 
+# ====================== Socket Events ======================
 @socketio.on('create_game')
 def handle_create_game():
     room = generate_room_code()
@@ -140,6 +138,7 @@ def handle_player_ready(data):
             socketio.emit('game_update', rooms[room]['game_state'], room=room)
             socketio.emit('both_ready', room=room)
 
+# (the rest of your socket handlers are unchanged - pause, resume, update_paddle, restart, leave, disconnect)
 @socketio.on('pause_game')
 def handle_pause_game(data):
     room = data.get('room')
