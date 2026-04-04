@@ -119,36 +119,22 @@ function drawGame() {
     ctx.fillText(gameState.score1 || 0, 200, 80);
     ctx.fillText(gameState.score2 || 0, 600, 80);
 
-    // === PLAYER NAMES ON THE EDGES OF THE TABLE (vertical) ===
-    ctx.save();
+    // === NEW: PLAYER LABELS ===
     ctx.font = 'bold 28px Arial';
     ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
 
-    // PLAYER 1 - Far left edge of table
+    // Player 1 (Left)
     ctx.fillStyle = (mySide === 'left') ? '#0ff' : '#fff';
-    ctx.translate(20, 300);           // x=20 = right behind left paddle
-    ctx.rotate(-Math.PI / 2);
-    ctx.fillText('PLAYER 1', 0, 0);
-    ctx.restore();
-
-    // PLAYER 2 - Far right edge of table
-    ctx.save();
-    ctx.fillStyle = (mySide === 'right') ? '#0ff' : '#fff';
-    ctx.translate(780, 300);          // x=780 = right behind right paddle
-    ctx.rotate(Math.PI / 2);
-    ctx.fillText('PLAYER 2', 0, 0);
-    ctx.restore();
-
-    // (YOU) under your name
-    ctx.font = 'bold 18px Arial';
-    ctx.textAlign = 'center';
+    ctx.fillText('PLAYER 1', 200, 125);
     if (mySide === 'left') {
-        ctx.fillStyle = '#0ff';
-        ctx.fillText('(YOU)', 20, 340);
-    } else if (mySide === 'right') {
-        ctx.fillStyle = '#0ff';
-        ctx.fillText('(YOU)', 780, 340);
+        ctx.fillText('(YOU)', 200, 155);
+    }
+
+    // Player 2 (Right)
+    ctx.fillStyle = (mySide === 'right') ? '#0ff' : '#fff';
+    ctx.fillText('PLAYER 2', 600, 125);
+    if (mySide === 'right') {
+        ctx.fillText('(YOU)', 600, 155);
     }
 
     // Paused text
@@ -158,4 +144,4 @@ function drawGame() {
         ctx.textAlign = 'center';
         ctx.fillText('PAUSED', 400, 300);
     }
-               }
+}
