@@ -22,6 +22,15 @@ socket.on('joined', (d) => {
 
 socket.on('player_assigned', (d) => { 
     mySide = d.side; 
+    
+    // Show correct (YOU) outside the table
+    if (mySide === 'left') {
+        document.getElementById('you1').style.opacity = '1';
+        document.getElementById('you2').style.opacity = '0';
+    } else {
+        document.getElementById('you1').style.opacity = '0';
+        document.getElementById('you2').style.opacity = '1';
+    }
 });
 
 socket.on('countdown', (d) => {
