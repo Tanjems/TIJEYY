@@ -19,3 +19,27 @@ button:hover { background:#fff; color:#000; transform:scale(1.08); box-shadow:0 
 .big-number { font-size:15rem; font-weight:bold; animation:pulse .6s infinite; }
 @keyframes pulse { 0%{transform:scale(1);} 50%{transform:scale(1.12);} 100%{transform:scale(1);} }
 .highlight { font-size:2.2rem; color:#0ff; letter-spacing:8px; }
+
+.player-label {
+    font-family: Arial, sans-serif;
+    font-size: 32px;
+    font-weight: bold;
+    color: #fff;
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    user-select: none;
+}
+
+.you-label {
+    font-size: 18px;
+    color: #0ff;
+    font-weight: bold;
+    opacity: 0;
+}
+
+#player1-label { color: #0ff; }
