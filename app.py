@@ -138,12 +138,14 @@ def handle_player_ready(data):
             socketio.emit('game_update', rooms[room]['game_state'], room=room)
             socketio.emit('both_ready', room=room)
 
-# (the rest of your socket handlers are unchanged - pause, resume, update_paddle, restart, leave, disconnect)
 @socketio.on('pause_game')
 def handle_pause_game(data):
     room = data.get('room')
     if room in rooms:
         rooms[room]['paused'] = True
+        state = rooms[room]['game_state']
+        state['paused'] = True                     # ← tell client we are paused
+        socketio.emit('game_update', state, room=room)   # ← send frozen position
         socketio.emit('game_paused', room=room)
 
 @socketio.on('resume_game')
@@ -151,6 +153,10 @@ def handle_resume_game(data):
     room = data.get('room')
     if room in rooms:
         rooms[room]['paused'] = False
+        state = rooms[room]['game_state']
+        state['paused'] = False                    # ← tell client we resumed
+        socketio.emit('game_update', state, room=room)   # ← send current position
+        # no extra event needed - game_update is enough
 
 @socketio.on('update_paddle')
 def handle_update_paddle(data):
