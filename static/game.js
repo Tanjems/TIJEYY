@@ -119,38 +119,6 @@ function drawGame() {
     ctx.fillText(gameState.score1 || 0, 200, 80);
     ctx.fillText(gameState.score2 || 0, 600, 80);
 
-    // === VERTICAL PLAYER LABELS ON THE SIDES ===
-    ctx.save();
-    ctx.font = 'bold 26px Arial';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-
-    // PLAYER 1 - Left side (vertical)
-    ctx.fillStyle = (mySide === 'left') ? '#0ff' : '#fff';
-    ctx.translate(28, 300);
-    ctx.rotate(-Math.PI / 2);
-    ctx.fillText('PLAYER 1', 0, 0);
-    ctx.restore();
-
-    // PLAYER 2 - Right side (vertical)
-    ctx.save();
-    ctx.fillStyle = (mySide === 'right') ? '#0ff' : '#fff';
-    ctx.translate(772, 300);
-    ctx.rotate(Math.PI / 2);
-    ctx.fillText('PLAYER 2', 0, 0);
-    ctx.restore();
-
-    // (YOU) indicator for your side
-    ctx.font = 'bold 18px Arial';
-    ctx.textAlign = 'center';
-    if (mySide === 'left') {
-        ctx.fillStyle = '#0ff';
-        ctx.fillText('(YOU)', 28, 340);
-    } else if (mySide === 'right') {
-        ctx.fillStyle = '#0ff';
-        ctx.fillText('(YOU)', 772, 340);
-    }
-
     // Paused text
     if (gameState.paused) {
         ctx.fillStyle = 'rgba(255,255,255,0.8)';
