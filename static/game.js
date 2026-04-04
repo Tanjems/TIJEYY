@@ -95,25 +95,63 @@ function drawGame() {
     ctx.fillStyle = '#000';
     ctx.fillRect(0, 0, 800, 600);
 
+    // Dashed center line
     ctx.strokeStyle = '#fff';
     ctx.setLineDash([15,15]);
     ctx.lineWidth = 4;
     ctx.beginPath(); ctx.moveTo(400,0); ctx.lineTo(400,600); ctx.stroke();
     ctx.setLineDash([]);
 
+    // Paddles
     ctx.fillStyle = '#fff';
     ctx.fillRect(15, gameState.paddle1_y || 250, 12, 100);
     ctx.fillRect(773, gameState.paddle2_y || 250, 12, 100);
 
+    // Ball
     ctx.beginPath();
     ctx.arc(gameState.ball_x || 400, gameState.ball_y || 300, 12, 0, Math.PI*2);
     ctx.fill();
 
+    // Scores
     ctx.font = 'bold 48px Arial';
     ctx.textAlign = 'center';
+    ctx.fillStyle = '#fff';
     ctx.fillText(gameState.score1 || 0, 200, 80);
     ctx.fillText(gameState.score2 || 0, 600, 80);
 
+    // === VERTICAL PLAYER LABELS ON THE SIDES ===
+    ctx.save();
+    ctx.font = 'bold 26px Arial';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+
+    // PLAYER 1 - Left side (vertical)
+    ctx.fillStyle = (mySide === 'left') ? '#0ff' : '#fff';
+    ctx.translate(28, 300);
+    ctx.rotate(-Math.PI / 2);
+    ctx.fillText('PLAYER 1', 0, 0);
+    ctx.restore();
+
+    // PLAYER 2 - Right side (vertical)
+    ctx.save();
+    ctx.fillStyle = (mySide === 'right') ? '#0ff' : '#fff';
+    ctx.translate(772, 300);
+    ctx.rotate(Math.PI / 2);
+    ctx.fillText('PLAYER 2', 0, 0);
+    ctx.restore();
+
+    // (YOU) indicator for your side
+    ctx.font = 'bold 18px Arial';
+    ctx.textAlign = 'center';
+    if (mySide === 'left') {
+        ctx.fillStyle = '#0ff';
+        ctx.fillText('(YOU)', 28, 340);
+    } else if (mySide === 'right') {
+        ctx.fillStyle = '#0ff';
+        ctx.fillText('(YOU)', 772, 340);
+    }
+
+    // Paused text
     if (gameState.paused) {
         ctx.fillStyle = 'rgba(255,255,255,0.8)';
         ctx.font = 'bold 60px Arial';
