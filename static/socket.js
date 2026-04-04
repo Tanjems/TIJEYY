@@ -42,20 +42,17 @@ socket.on('countdown', (d) => {
 socket.on('game_update', (state) => {
     if (!state) return;
 
-    // === FIX: Protect your own paddle from server snapping it back ===
+    // === Protect your own paddle (already fixed earlier) ===
     const myPaddleKey = mySide === 'left' ? 'paddle1_y' : 'paddle2_y';
-    const myCurrentPaddleY = gameState[myPaddleKey];   // remember your local position
+    const myCurrentPaddleY = gameState[myPaddleKey];
 
-    // Apply everything the server sent (ball, opponent paddle, scores, etc.)
     Object.assign(gameState, state);
 
-    // Restore YOUR paddle so it never gets snapped back
     if (myCurrentPaddleY !== undefined) {
         gameState[myPaddleKey] = myCurrentPaddleY;
     }
 
-    // Optional: keep your debug log
-    console.log("📡 GAME UPDATE - ball_vx:", state.ball_vx, "ball_vy:", state.ball_vy);
+    console.log("📡 GAME UPDATE - ball_vx:", state.ball_vx, "ball_vy:", state.ball_vy, "paused:", state.paused);
 });
 
 socket.on('game_over', (d) => {
