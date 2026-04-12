@@ -35,6 +35,7 @@ function gameLoop() {
 
 function updateOwnPaddle() {
     if (!mySide || !myRoom || !gameState) return;
+
     const key = mySide === 'left' ? 'paddle1_y' : 'paddle2_y';
     let y = gameState[key] || 250;
     const speed = 8;
@@ -47,12 +48,15 @@ function updateOwnPaddle() {
         if (keys['arrowdown']) y += speed;
     }
     y += touchDirection * speed;
+
+    // Strong clamp so it never goes out of bounds
     y = Math.max(0, Math.min(500, y));
 
-    if (Math.abs(y - (gameState[key] || 250)) > 0.1) {
-        gameState[key] = y;
-        socket.emit('update_paddle', {room: myRoom, y: Math.round(y)});
-    }
+    // ALWAYS update local position immediately (this stops teleport)
+    gameState[key] = y;
+
+    // Send to server every frame while moving
+    socket.emit('update_paddle', {room: myRoom, y: Math.round(y)});
 }
 
 function updateBallLocally() {
