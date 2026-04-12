@@ -98,18 +98,14 @@ function updateBallLocally() {
 function drawGame() {
     if (!ctx) return;
     
-// === ENTIRE BACKGROUND = SANDY YELLOW (exactly like your screenshot) ===
-    ctx.fillStyle = '#F4D9A0';
-    ctx.fillRect(0, 0, 800, 600);
-
-    // Green table (centered with some space around it)
+    // Green table background
     ctx.fillStyle = '#4CAF50';
-    ctx.fillRect(50, 50, 700, 500);
+    ctx.fillRect(0, 0, 800, 600);
 
     // Black table border
     ctx.strokeStyle = '#111';
-    ctx.lineWidth = 25;
-    ctx.strokeRect(50, 50, 700, 500);
+    ctx.lineWidth = 20;
+    ctx.strokeRect(10, 10, 780, 580);
     
     // White net in the middle
     ctx.strokeStyle = '#fff';
