@@ -92,8 +92,5 @@ button:hover {
 }
 
 /* ====================== GAME SCREEN ====================== */
-#game-screen {
-    background: #0a0a0a;
-}
-
-/* Player labels in game (already in canvas) */
+#game-screen { background: #F4D9A0 !important; }
+body { background: #F4D9A0; }
