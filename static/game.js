@@ -93,56 +93,95 @@ function updateBallLocally() {
 
 function drawGame() {
     if (!ctx) return;
-    ctx.fillStyle = '#000';
+
+    // Green table background
+    ctx.fillStyle = '#4CAF50';
     ctx.fillRect(0, 0, 800, 600);
 
-    // Dashed center line
+    // Black table border
+    ctx.strokeStyle = '#111';
+    ctx.lineWidth = 20;
+    ctx.strokeRect(10, 10, 780, 580);
+
+    // White net in the middle
     ctx.strokeStyle = '#fff';
-    ctx.setLineDash([15,15]);
-    ctx.lineWidth = 4;
-    ctx.beginPath(); ctx.moveTo(400,0); ctx.lineTo(400,600); ctx.stroke();
+    ctx.setLineDash([10, 10]);
+    ctx.lineWidth = 6;
+    ctx.beginPath();
+    ctx.moveTo(400, 10);
+    ctx.lineTo(400, 590);
+    ctx.stroke();
     ctx.setLineDash([]);
 
-    // Paddles
+    // Paddles - Real table tennis style (round head + handle)
     ctx.fillStyle = '#fff';
-    ctx.fillRect(15, gameState.paddle1_y || 250, 12, 100);
-    ctx.fillRect(773, gameState.paddle2_y || 250, 12, 100);
+    ctx.strokeStyle = '#111';
+    ctx.lineWidth = 8;
 
-    // Ball
+    // Left paddle (Player 1 - Red)
+    const p1y = gameState.paddle1_y || 250;
+    ctx.fillStyle = '#ff4444';                    // red paddle
     ctx.beginPath();
-    ctx.arc(gameState.ball_x || 400, gameState.ball_y || 300, 12, 0, Math.PI*2);
+    ctx.arc(40, p1y + 50, 28, 0, Math.PI * 2);   // round paddle head
     ctx.fill();
+    ctx.stroke();
+    // handle
+    ctx.fillStyle = '#111';
+    ctx.fillRect(18, p1y + 45, 12, 12);
+
+    // Right paddle (Player 2 - Blue)
+    const p2y = gameState.paddle2_y || 250;
+    ctx.fillStyle = '#4488ff';                    // blue paddle
+    ctx.beginPath();
+    ctx.arc(760, p2y + 50, 28, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+    // handle
+    ctx.fillStyle = '#111';
+    ctx.fillRect(770, p2y + 45, 12, 12);
+
+    // Ball (white with black outline + shadow)
+    const bx = gameState.ball_x || 400;
+    const by = gameState.ball_y || 300;
+    // shadow
+    ctx.fillStyle = 'rgba(0,0,0,0.3)';
+    ctx.beginPath();
+    ctx.ellipse(bx + 4, by + 6, 13, 8, 0, 0, Math.PI * 2);
+    ctx.fill();
+    // ball
+    ctx.fillStyle = '#fff';
+    ctx.strokeStyle = '#111';
+    ctx.lineWidth = 4;
+    ctx.beginPath();
+    ctx.arc(bx, by, 13, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
 
     // Scores
-    ctx.font = 'bold 48px Arial';
+    ctx.font = 'bold 52px Arial';
     ctx.textAlign = 'center';
     ctx.fillStyle = '#fff';
     ctx.fillText(gameState.score1 || 0, 200, 80);
     ctx.fillText(gameState.score2 || 0, 600, 80);
 
-    // === NEW: PLAYER LABELS ===
-    ctx.font = 'bold 28px Arial';
-    ctx.textAlign = 'center';
+    // Player labels (optional but nice)
+    ctx.font = 'bold 22px Arial';
+    ctx.fillStyle = '#fff';
+    ctx.fillText('PLAYER 1', 200, 120);
+    ctx.fillText('PLAYER 2', 600, 120);
 
-    // Player 1 (Left)
-    ctx.fillStyle = (mySide === 'left') ? '#0ff' : '#fff';
-    ctx.fillText('PLAYER 1', 200, 125);
-    if (mySide === 'left') {
-        ctx.fillText('(YOU)', 200, 155);
-    }
+    if (mySide === 'left') ctx.fillStyle = '#0ff';
+    else ctx.fillStyle = '#fff';
+    ctx.fillText('(YOU)', 200, 150);
 
-    // Player 2 (Right)
-    ctx.fillStyle = (mySide === 'right') ? '#0ff' : '#fff';
-    ctx.fillText('PLAYER 2', 600, 125);
-    if (mySide === 'right') {
-        ctx.fillText('(YOU)', 600, 155);
-    }
+    if (mySide === 'right') ctx.fillStyle = '#0ff';
+    else ctx.fillStyle = '#fff';
+    ctx.fillText('(YOU)', 600, 150);
 
     // Paused text
     if (gameState.paused) {
-        ctx.fillStyle = 'rgba(255,255,255,0.8)';
-        ctx.font = 'bold 60px Arial';
-        ctx.textAlign = 'center';
+        ctx.fillStyle = 'rgba(255,255,255,0.9)';
+        ctx.font = 'bold 70px Arial';
         ctx.fillText('PAUSED', 400, 300);
     }
 }
