@@ -15,15 +15,23 @@ rooms = {}
 def generate_room_code():
     return ''.join(random.choices(string.ascii_uppercase + string.digits, k=4))
 
-def reset_ball(state):
-    state['ball_x'] = 400
+def reset_ball(state, serve_side='left'):
     state['ball_y'] = 300
     state['ball_vx'] = 0
     state['ball_vy'] = 0
+    
+    if serve_side == 'left':
+        state['ball_x'] = 120          # starts near left paddle
+    else:
+        state['ball_x'] = 680          # starts near right paddle
 
 def start_ball(state):
-    state['ball_vx'] = random.choice([-5, 5])
-    state['ball_vy'] = random.randint(-3, 3)
+    # Direction depends on who is serving
+    if state['ball_x'] < 400:          # left side serving
+        state['ball_vx'] = 6
+    else:
+        state['ball_vx'] = -6
+    state['ball_vy'] = random.randint(-4, 4)
 
 def game_loop(room):
     if room not in rooms: return
@@ -55,22 +63,21 @@ def game_loop(room):
 
         # Scoring
         if state['ball_x'] < 0:
-            print(f"*** POINT for Player 2! Score now {state['score1']}-{state['score2']+1} ***")
             state['score2'] += 1
-            reset_ball(state)
+            reset_ball(state, serve_side='right')   # Player 2 scored → next serve from right
             rooms[room]['ready_players'] = set()
-            socketio.emit('point_scored', state, room=room)   # ← FIXED
+            socketio.emit('point_scored', state, room=room)
             socketio.sleep(0.8)
             if state['score2'] >= 5:
                 socketio.emit('game_over', {'winner': 'Player 2'}, room=room)
                 rooms[room]['running'] = False
                 break
+
         elif state['ball_x'] > 800:
-            print(f"*** POINT for Player 1! Score now {state['score1']+1}-{state['score2']} ***")
             state['score1'] += 1
-            reset_ball(state)
+            reset_ball(state, serve_side='left')    # Player 1 scored → next serve from left
             rooms[room]['ready_players'] = set()
-            socketio.emit('point_scored', state, room=room)   # ← FIXED
+            socketio.emit('point_scored', state, room=room)
             socketio.sleep(0.8)
             if state['score1'] >= 5:
                 socketio.emit('game_over', {'winner': 'Player 1'}, room=room)
