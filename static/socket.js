@@ -42,19 +42,19 @@ socket.on('countdown', (d) => {
 socket.on('game_update', (state) => {
     if (!state) return;
 
-    // === PROTECT YOUR OWN PADDLE (this fixes the teleport at top edge) ===
+    // === STRONG PROTECTION: Never let the server move YOUR paddle ===
     const myPaddleKey = mySide === 'left' ? 'paddle1_y' : 'paddle2_y';
-    const myCurrentPaddleY = gameState[myPaddleKey];   // remember your local position
+    const myCurrentY = gameState[myPaddleKey];           // remember your real position
 
-    // Apply everything from server (ball, opponent paddle, scores, etc.)
+    // Apply everything the server sent
     Object.assign(gameState, state);
 
-    // Restore YOUR paddle so it never gets snapped back by the server
-    if (myCurrentPaddleY !== undefined) {
-        gameState[myPaddleKey] = Math.max(0, Math.min(500, myCurrentPaddleY));
+    // FORCE your paddle back to your local position (this stops the teleport)
+    if (myCurrentY !== undefined) {
+        gameState[myPaddleKey] = Math.max(0, Math.min(500, myCurrentY));
     }
 
-    console.log("📡 GAME UPDATE - ball_vx:", state.ball_vx, "ball_vy:", state.ball_vy);
+    console.log("📡 GAME UPDATE - protected my paddle");
 });
 
 socket.on('game_over', (d) => {
