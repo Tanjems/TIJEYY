@@ -97,16 +97,20 @@ function updateBallLocally() {
 
 function drawGame() {
     if (!ctx) return;
-
-    // Green table background
-    ctx.fillStyle = '#4CAF50';
+    
+    // === SANDY BACKGROUND (exactly like your screenshot) ===
+    ctx.fillStyle = '#F4D9A0';        // warm sand color
     ctx.fillRect(0, 0, 800, 600);
+
+    // Green table (slightly smaller for better look)
+    ctx.fillStyle = '#4CAF50';
+    ctx.fillRect(40, 40, 720, 520);
 
     // Black table border
     ctx.strokeStyle = '#111';
-    ctx.lineWidth = 20;
-    ctx.strokeRect(10, 10, 780, 580);
-
+    ctx.lineWidth = 28;
+    ctx.strokeRect(40, 40, 720, 520);
+    
     // White net in the middle
     ctx.strokeStyle = '#fff';
     ctx.setLineDash([10, 10]);
