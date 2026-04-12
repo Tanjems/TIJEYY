@@ -168,19 +168,28 @@ function drawGame() {
     ctx.fillText(gameState.score1 || 0, 200, 80);
     ctx.fillText(gameState.score2 || 0, 600, 80);
 
-    // Player labels (optional but nice)
+    // === PLAYER LABELS + (YOU) only on your side ===
     ctx.font = 'bold 22px Arial';
-    ctx.fillStyle = '#fff';
+    ctx.textAlign = 'center';
+
+    // PLAYER 1 label
+    ctx.fillStyle = (mySide === 'left') ? '#0ff' : '#fff';
     ctx.fillText('PLAYER 1', 200, 120);
+
+    // PLAYER 2 label
+    ctx.fillStyle = (mySide === 'right') ? '#0ff' : '#fff';
     ctx.fillText('PLAYER 2', 600, 120);
 
-    if (mySide === 'left') ctx.fillStyle = '#0ff';
-    else ctx.fillStyle = '#fff';
-    ctx.fillText('(YOU)', 200, 150);
-
-    if (mySide === 'right') ctx.fillStyle = '#0ff';
-    else ctx.fillStyle = '#fff';
-    ctx.fillText('(YOU)', 600, 150);
+    // (YOU) only appears on YOUR side
+    ctx.font = 'bold 18px Arial';
+    if (mySide === 'left') {
+        ctx.fillStyle = '#0ff';
+        ctx.fillText('(YOU)', 200, 150);
+    } 
+    else if (mySide === 'right') {
+        ctx.fillStyle = '#0ff';
+        ctx.fillText('(YOU)', 600, 150);
+    }
 
     // Paused text
     if (gameState.paused) {
