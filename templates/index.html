@@ -33,12 +33,21 @@
     <div id="game-screen" class="screen">
     <canvas id="game-canvas" width="800" height="600"></canvas>
     
-    <!-- READY BUTTON OVERLAY -->
-    <div id="ready-overlay" style="position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); 
-         display:none; flex-direction:column; align-items:center; gap:20px; background:rgba(0,0,0,0.9); 
-         padding:40px 80px; border-radius:20px; border:3px solid #0ff; z-index:10;">
-        <h2 id="ready-text" style="margin:0; color:#0ff; font-size:2.5rem;">READY?</h2>
-        <button onclick="playerReady()" style="font-size:1.8rem; padding:18px 60px; background:#0ff; color:#000; border:none; border-radius:10px; cursor:pointer;">
+<!-- READY BUTTON OVERLAY - Matches game style -->
+    <div id="ready-overlay" style="position:absolute; top:50%; left:50%; transform:translate(-50%, -50%);
+         display:none; flex-direction:column; align-items:center; gap:25px; 
+         background:rgba(10,10,10,0.95); padding:50px 90px; border-radius:25px; 
+         border:6px solid #4CAF50; box-shadow:0 0 60px #4CAF50, 0 0 120px #0ff; z-index:10;">
+        
+        <h2 id="ready-text" style="margin:0; color:#4CAF50; font-size:3.2rem; 
+             font-weight:bold; letter-spacing:6px; text-shadow:0 0 30px #0ff;">
+            READY?
+        </h2>
+        
+        <button onclick="playerReady()" style="font-size:2rem; padding:22px 80px; 
+             background:#4CAF50; color:#000; border:none; border-radius:15px; 
+             cursor:pointer; font-weight:bold; letter-spacing:3px; 
+             box-shadow:0 0 40px #4CAF50, 0 0 80px #0ff; transition:all 0.3s;">
             I'M READY
         </button>
     </div>
