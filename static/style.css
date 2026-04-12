@@ -1,22 +1,99 @@
-body { margin:0; background:#0a0a0a; color:#fff; font-family:Arial, sans-serif; overflow:hidden; }
-.screen {
-    position:fixed; top:0; left:0; width:100%; height:100%;
-    display:none; flex-direction:column; align-items:center; justify-content:center;
-    background:radial-gradient(circle at center, #1a1a1a, #000);
+body {
+    margin: 0;
+    background: #0a0a0a;
+    color: #fff;
+    font-family: Arial, sans-serif;
+    overflow: hidden;
 }
-.screen.active { display:flex; }
-.title {
-    font-size:4.5rem; text-align:center; margin-bottom:40px;
-    text-shadow:0 0 30px #0ff, 0 0 60px #0ff;
-    animation:glow 1.5s infinite alternate;
-}
-@keyframes glow { from{text-shadow:0 0 20px #0ff;} to{text-shadow:0 0 80px #0ff,0 0 120px #0ff;} }
-button {
-    background:transparent; border:3px solid #fff; color:#fff; padding:15px 40px;
-    font-size:1.6rem; margin:15px; cursor:pointer; transition:all .3s;
-}
-button:hover { background:#fff; color:#000; transform:scale(1.08); box-shadow:0 0 40px #fff; }
-.big-number { font-size:15rem; font-weight:bold; animation:pulse .6s infinite; }
-@keyframes pulse { 0%{transform:scale(1);} 50%{transform:scale(1.12);} 100%{transform:scale(1);} }
-.highlight { font-size:2.2rem; color:#0ff; letter-spacing:8px; }
 
+/* ====================== SCREENS ====================== */
+.screen {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: radial-gradient(circle at center, #1a1a1a, #0a0a0a);
+}
+.screen.active { display: flex; }
+
+/* Title */
+.title {
+    font-size: 4.8rem;
+    text-align: center;
+    margin-bottom: 40px;
+    background: linear-gradient(90deg, #4CAF50, #0ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 40px #4CAF50;
+    animation: glow 1.8s infinite alternate;
+}
+@keyframes glow {
+    from { text-shadow: 0 0 20px #4CAF50; }
+    to   { text-shadow: 0 0 60px #0ff, 0 0 90px #4CAF50; }
+}
+
+/* Buttons */
+button {
+    background: #111;
+    border: 4px solid #4CAF50;
+    color: #fff;
+    padding: 18px 50px;
+    font-size: 1.7rem;
+    margin: 15px;
+    cursor: pointer;
+    transition: all 0.3s;
+    border-radius: 12px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+button:hover {
+    background: #4CAF50;
+    color: #000;
+    transform: scale(1.08);
+    box-shadow: 0 0 30px #4CAF50;
+}
+
+/* Highlight text */
+.highlight {
+    color: #0ff;
+    font-size: 2.2rem;
+    letter-spacing: 8px;
+}
+
+/* Big countdown number */
+.big-number {
+    font-size: 18rem;
+    font-weight: bold;
+    color: #4CAF50;
+    text-shadow: 0 0 60px #0ff;
+    animation: pulse 0.8s infinite;
+}
+@keyframes pulse { 50% { transform: scale(1.15); } }
+
+/* Ready Overlay */
+#ready-overlay {
+    background: rgba(10, 10, 10, 0.95);
+    border: 5px solid #4CAF50;
+    box-shadow: 0 0 60px #4CAF50;
+}
+
+/* Pause button */
+#pause-btn {
+    background: #111;
+    border: 3px solid #0ff;
+    color: #0ff;
+}
+
+/* Game Over */
+#game-over-screen button {
+    border-color: #4CAF50;
+}
+
+/* ====================== GAME SCREEN ====================== */
+#game-screen {
+    background: #0a0a0a;
+}
+
+/* Player labels in game (already in canvas) */
