@@ -49,13 +49,10 @@ function updateOwnPaddle() {
     }
     y += touchDirection * speed;
 
-    // Strong clamp so it never goes out of bounds
-    y = Math.max(0, Math.min(500, y));
+    y = Math.max(0, Math.min(500, y));   // strong clamp
 
-    // ALWAYS update local position immediately (this stops teleport)
-    gameState[key] = y;
+    gameState[key] = y;                   // always update locally first
 
-    // Send to server every frame while moving
     socket.emit('update_paddle', {room: myRoom, y: Math.round(y)});
 }
 
