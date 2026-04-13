@@ -1,6 +1,6 @@
 body {
     margin: 0;
-    background: #0a0a0a;
+    background: #1e3a2f;           /* Changed: Nice dark green table feel */
     color: #fff;
     font-family: Arial, sans-serif;
     overflow: hidden;
@@ -14,11 +14,11 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background: radial-gradient(circle at center, #1a1a1a, #0a0a0a);
+    background: #1e3a2f;           /* Changed: Solid dark green instead of black radial */
 }
 .screen.active { display: flex; }
 
-/* Title */
+/* Title - kept your beautiful gradient but made it pop more */
 .title {
     font-size: 4.8rem;
     text-align: center;
@@ -34,7 +34,7 @@ body {
     to   { text-shadow: 0 0 60px #0ff, 0 0 90px #4CAF50; }
 }
 
-/* Buttons */
+/* Buttons - improved contrast on new background */
 button {
     background: #111;
     border: 4px solid #4CAF50;
@@ -52,7 +52,7 @@ button:hover {
     background: #4CAF50;
     color: #000;
     transform: scale(1.08);
-    box-shadow: 0 0 30px #4CAF50;
+    box-shadow: 0 0 40px #4CAF50;
 }
 
 /* Highlight text */
@@ -72,9 +72,9 @@ button:hover {
 }
 @keyframes pulse { 50% { transform: scale(1.15); } }
 
-/* Ready Overlay */
+/* Ready Overlay - made it blend better */
 #ready-overlay {
-    background: rgba(10, 10, 10, 0.95);
+    background: rgba(30, 58, 47, 0.95);   /* Dark green tint */
     border: 5px solid #4CAF50;
     box-shadow: 0 0 60px #4CAF50;
 }
@@ -92,5 +92,6 @@ button:hover {
 }
 
 /* ====================== GAME SCREEN ====================== */
-#game-screen { background: #F4D9A0 !important; }
-body { background: #F4D9A0; }
+#game-screen { 
+    background: #4CAF50 !important;     /* Bright table green - looks much better */
+}
