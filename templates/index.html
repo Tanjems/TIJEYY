@@ -68,47 +68,55 @@
 
 <!-- ==================== HOW TO PLAY MODAL ==================== -->
 <div id="howtoplay-screen" class="screen">
-    <div style="background:#1e3a2f; border:6px solid #4CAF50; border-radius:20px; 
-                padding:35px 40px; max-width:640px; width:92%; color:#fff; 
-                text-align:left; box-shadow:0 0 60px rgba(76, 175, 80, 0.5);">
+    <div style="background: rgba(20, 20, 20, 0.92); 
+                border: 6px solid #4CAF50; 
+                border-radius: 24px; 
+                padding: 40px 45px; 
+                max-width: 680px; 
+                width: 92%; 
+                color: #fff; 
+                text-align: left; 
+                box-shadow: 0 0 80px rgba(76, 175, 80, 0.6); 
+                position: relative;">
         
-        <h2 style="text-align:center; color:#4CAF50; margin:0 0 30px 0; font-size:2.4rem;">
+        <h2 style="text-align:center; color:#4CAF50; margin:0 0 35px 0; font-size:2.6rem; 
+                   text-shadow: 0 0 20px #0ff;">
             HOW TO PLAY
         </h2>
 
-        <ol style="font-size:1.15rem; line-height:1.55; padding-left:20px;">
-            <li><strong>Starting the Game</strong><br>
-                One player clicks <strong>Create Game</strong> to get a 4-digit room code.<br>
-                The other player clicks <strong>Join Game</strong> and enters that code.<br>
-                <strong>Both players must click "I'M READY"</strong> to start the match.
+        <ol style="font-size: 1.18rem; line-height: 1.65; padding-left: 22px;">
+            <li><strong>1. Starting the Game</strong><br>
+                One player clicks <strong>Create Game</strong> to generate a 4-digit room code.<br>
+                The second player clicks <strong>Join Game</strong> and enters the code.<br>
+                <strong>Both players must click "I'M READY"</strong> before the match starts.
             </li>
             <br>
-            <li><strong>Controls</strong><br>
+            <li><strong>2. Controls</strong><br>
                 • Player 1 (Left - Red paddle): <strong>W</strong> = Up, <strong>S</strong> = Down<br>
                 • Player 2 (Right - Blue paddle): <strong>↑ Arrow</strong> = Up, <strong>↓ Arrow</strong> = Down<br>
-                • On mobile: Drag your finger up/down on your side of the screen.
+                • On mobile/touch: Drag your finger up or down on your side of the screen.
             </li>
             <br>
-            <li><strong>How the Ball Works</strong><br>
-                Hit the ball with your paddle. The spot where the ball hits your paddle changes its speed and angle.<br>
-                The ball bounces off the top and bottom walls. If it passes your paddle, the opponent scores.
+            <li><strong>3. How the Ball Works</strong><br>
+                The faster you hit the ball near the edge of your paddle, the more angle and speed it gets.<br>
+                The ball bounces off the top and bottom edges. If the ball goes past your paddle, the opponent scores a point.
             </li>
             <br>
-            <li><strong>Scoring</strong><br>
+            <li><strong>4. Scoring & Ready System</strong><br>
                 First player to reach <strong>5 points</strong> wins the match.<br>
-                After every point, both players must click <strong>"I'M READY"</strong> again to continue.
+                After every point scored, both players must click <strong>"I'M READY"</strong> again to resume play.
             </li>
             <br>
-            <li><strong>Winning the Match</strong><br>
-                The first player to 5 points wins!<br>
-                You can play again immediately by clicking <strong>Play Again</strong>.
+            <li><strong>5. Winning the Match</strong><br>
+                The first to 5 points wins!<br>
+                You can immediately start a new match by clicking <strong>Play Again</strong>.
             </li>
         </ol>
 
-        <div style="text-align:center; margin-top:30px;">
+        <div style="text-align:center; margin-top: 40px;">
             <button onclick="hideHowToPlay()" 
-                    style="background:#4CAF50; color:#000; border:none; padding:16px 60px; 
-                           font-size:1.6rem; border-radius:12px; cursor:pointer;">
+                    style="background:#4CAF50; color:#000; border:none; padding:18px 70px; 
+                           font-size:1.7rem; border-radius:15px; cursor:pointer; font-weight:bold;">
                 OK
             </button>
         </div>
