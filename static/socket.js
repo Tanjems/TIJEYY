@@ -43,16 +43,14 @@ socket.on('game_update', (state) => {
     if (!state) return;
 
     const myPaddleKey = mySide === 'left' ? 'paddle1_y' : 'paddle2_y';
-    const myCurrentY = gameState[myPaddleKey];   // remember YOUR position
+    
+    // Remember your exact local paddle position
+    const myCurrentY = gameState[myPaddleKey];
 
-    // Remove the server's version of YOUR paddle completely
-    const cleanState = { ...state };
-    delete cleanState[myPaddleKey];
+    // Apply everything the server sent
+    Object.assign(gameState, state);
 
-    // Apply everything else from server (ball, opponent paddle, scores, etc.)
-    Object.assign(gameState, cleanState);
-
-    // Force restore and clamp YOUR paddle (this fixes top edge)
+    // FORCE your paddle back to your local position (this fixes the top edge teleport)
     if (myCurrentY !== undefined) {
         gameState[myPaddleKey] = Math.max(0, Math.min(500, myCurrentY));
     }
