@@ -65,3 +65,11 @@ function togglePause() {
         btn.textContent = "⏸ PAUSE";
     }
 }
+
+function showRules() {
+    document.getElementById('rules-modal').style.display = 'flex';
+}
+
+function hideRules() {
+    document.getElementById('rules-modal').style.display = 'none';
+}
