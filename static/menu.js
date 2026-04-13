@@ -66,10 +66,12 @@ function togglePause() {
     }
 }
 
-function showRules() {
-    document.getElementById('rules-modal').style.display = 'flex';
+function showHowToPlay() {
+    document.getElementById('menu-screen').style.display = 'none';
+    document.getElementById('howtoplay-screen').style.display = 'flex';
 }
 
-function hideRules() {
-    document.getElementById('rules-modal').style.display = 'none';
+function hideHowToPlay() {
+    document.getElementById('howtoplay-screen').style.display = 'none';
+    document.getElementById('menu-screen').style.display = 'flex';
 }
