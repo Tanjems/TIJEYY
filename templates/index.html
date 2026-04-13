@@ -66,41 +66,54 @@
         <button onclick="exitToMenu()">Exit to Menu</button>
     </div>
 
-        <!-- HOW TO PLAY MODAL -->
-    <div id="rules-modal" style="position:fixed; top:0; left:0; width:100%; height:100%; 
-         background:rgba(0,0,0,0.9); display:none; align-items:center; justify-content:center; z-index:100;">
+<!-- ==================== HOW TO PLAY MODAL ==================== -->
+<div id="howtoplay-screen" class="screen" style="display:none;">
+    <div style="background:#1e3a2f; border:6px solid #4CAF50; border-radius:20px; 
+                padding:35px 40px; max-width:640px; width:92%; color:#fff; 
+                text-align:left; box-shadow:0 0 60px rgba(76, 175, 80, 0.5);">
         
-        <div style="background:#222; width:90%; max-width:520px; border-radius:20px; padding:30px; border:6px solid #4CAF50;">
-            <h2 style="text-align:center; color:#4CAF50; margin:0 0 25px 0; font-size:2.2rem;">HOW TO PLAY</h2>
-            
-            <div style="line-height:1.7; font-size:1.1rem; color:#ddd;">
-                <p><strong>1. Start the Game</strong><br>
-                Create a room or join with a 4-digit code. Both players must click "I'M READY" to begin.</p>
-                
-                <p><strong>2. Controls</strong><br>
-                • Player 1 (Left): W = Up, S = Down<br>
-                • Player 2 (Right): ↑ Arrow = Up, ↓ Arrow = Down<br>
-                • Mobile: Drag finger up/down on the screen</p>
-                
-                <p><strong>3. Scoring</strong><br>
-                First player to reach <strong>5 points</strong> wins.<br>
-                After every point, both players must click "I'M READY" again.</p>
-                
-                <p><strong>4. Pause</strong><br>
-                Click the ⏸ PAUSE button anytime.</p>
-                
-                <p><strong>5. Win Condition</strong><br>
-                The first to 5 points wins the match.</p>
-            </div>
+        <h2 style="text-align:center; color:#4CAF50; margin:0 0 30px 0; font-size:2.4rem;">
+            HOW TO PLAY
+        </h2>
 
-            <div style="text-align:center; margin-top:30px;">
-                <button onclick="hideRules()" style="background:#4CAF50; color:#000; font-size:1.4rem; 
-                     padding:15px 60px; border:none; border-radius:12px; cursor:pointer;">
-                    OK
-                </button>
-            </div>
+        <ol style="font-size:1.15rem; line-height:1.55; padding-left:20px;">
+            <li><strong>Starting the Game</strong><br>
+                One player clicks <strong>Create Game</strong> to get a 4-digit room code.<br>
+                The other player clicks <strong>Join Game</strong> and enters that code.<br>
+                <strong>Both players must click "I'M READY"</strong> to start the match.
+            </li>
+            <br>
+            <li><strong>Controls</strong><br>
+                • Player 1 (Left - Red paddle): <strong>W</strong> = Up, <strong>S</strong> = Down<br>
+                • Player 2 (Right - Blue paddle): <strong>↑ Arrow</strong> = Up, <strong>↓ Arrow</strong> = Down<br>
+                • On mobile: Drag your finger up/down on your side of the screen.
+            </li>
+            <br>
+            <li><strong>How the Ball Works</strong><br>
+                Hit the ball with your paddle. The spot where the ball hits your paddle changes its speed and angle.<br>
+                The ball bounces off the top and bottom walls. If it passes your paddle, the opponent scores.
+            </li>
+            <br>
+            <li><strong>Scoring</strong><br>
+                First player to reach <strong>5 points</strong> wins the match.<br>
+                After every point, both players must click <strong>"I'M READY"</strong> again to continue.
+            </li>
+            <br>
+            <li><strong>Winning the Match</strong><br>
+                The first player to 5 points wins!<br>
+                You can play again immediately by clicking <strong>Play Again</strong>.
+            </li>
+        </ol>
+
+        <div style="text-align:center; margin-top:30px;">
+            <button onclick="hideHowToPlay()" 
+                    style="background:#4CAF50; color:#000; border:none; padding:16px 60px; 
+                           font-size:1.6rem; border-radius:12px; cursor:pointer;">
+                OK
+            </button>
         </div>
     </div>
+</div>
     
     <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
     <script src="/static/socket.js"></script>
