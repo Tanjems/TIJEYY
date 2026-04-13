@@ -1,6 +1,6 @@
 body {
     margin: 0;
-    background: #E8C9A0;           /* Darker wood - better for eyes */
+    background: #E8C9A0;
     color: #1e3a2f;
     font-family: Arial, sans-serif;
     overflow: hidden;
@@ -18,47 +18,46 @@ body {
 }
 .screen.active { display: flex; }
 
-/* Title - Improved visibility with strong dark shadow + outline */
+/* ====================== TITLE - Like the big glowing "3" ====================== */
 .title {
     font-size: 4.8rem;
     text-align: center;
-    margin-bottom: 40px;
-    background: linear-gradient(90deg, #4CAF50, #0ff);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    margin-bottom: 50px;
+    font-weight: bold;
+    color: #4CAF50;                    /* Main bright green */
     
-    /* Strong dark shadow + outline for better readability */
+    /* Black outline + soft cyan glow (exactly like the screenshot) */
     text-shadow: 
-        -4px -4px 0 #1e3a2f,    /* dark outline top-left */
-         4px -4px 0 #1e3a2f,    /* dark outline top-right */
-        -4px  4px 0 #1e3a2f,    /* dark outline bottom-left */
-         4px  4px 0 #1e3a2f,    /* dark outline bottom-right */
-        0 0 20px #4CAF50,       /* original green glow */
-        0 0 40px #0ff,          /* cyan glow */
-        0 0 70px #4CAF50;       /* stronger green glow */
+        -6px -6px 0 #1e3a2f,    /* strong black outline */
+         6px -6px 0 #1e3a2f,
+        -6px  6px 0 #1e3a2f,
+         6px  6px 0 #1e3a2f,
+        0 0 20px #00ffcc,       /* soft cyan glow */
+        0 0 40px #00ffcc,       /* stronger cyan glow */
+        0 0 70px rgba(0, 255, 204, 0.6);
     
-    animation: glow 1.8s infinite alternate;
+    animation: title-glow 2s infinite alternate ease-in-out;
 }
 
-@keyframes glow {
-    from { 
+@keyframes title-glow {
+    from {
         text-shadow: 
-            -4px -4px 0 #1e3a2f,
-             4px -4px 0 #1e3a2f,
-            -4px  4px 0 #1e3a2f,
-             4px  4px 0 #1e3a2f,
-            0 0 20px #4CAF50,
-            0 0 40px #0ff;
+            -6px -6px 0 #1e3a2f,
+             6px -6px 0 #1e3a2f,
+            -6px  6px 0 #1e3a2f,
+             6px  6px 0 #1e3a2f,
+            0 0 15px #00ffcc,
+            0 0 35px #00ffcc;
     }
-    to { 
+    to {
         text-shadow: 
-            -4px -4px 0 #1e3a2f,
-             4px -4px 0 #1e3a2f,
-            -4px  4px 0 #1e3a2f,
-             4px  4px 0 #1e3a2f,
-            0 0 30px #4CAF50,
-            0 0 60px #0ff,
-            0 0 90px #4CAF50;
+            -6px -6px 0 #1e3a2f,
+             6px -6px 0 #1e3a2f,
+            -6px  6px 0 #1e3a2f,
+             6px  6px 0 #1e3a2f,
+            0 0 25px #00ffcc,
+            0 0 55px #00ffcc,
+            0 0 80px rgba(0, 255, 204, 0.8);
     }
 }
 
@@ -90,20 +89,21 @@ button:hover {
     letter-spacing: 8px;
 }
 
-/* Big countdown number */
+/* Big countdown number - Also styled like the screenshot */
 .big-number {
     font-size: 18rem;
     font-weight: bold;
     color: #4CAF50;
     text-shadow: 
-        -3px -3px 0 #1e3a2f,
-         3px -3px 0 #1e3a2f,
-        -3px  3px 0 #1e3a2f,
-         3px  3px 0 #1e3a2f,
-        0 0 60px #0ff;
+        -8px -8px 0 #1e3a2f,
+         8px -8px 0 #1e3a2f,
+        -8px  8px 0 #1e3a2f,
+         8px  8px 0 #1e3a2f,
+        0 0 30px #00ffcc,
+        0 0 60px #00ffcc;
     animation: pulse 0.8s infinite;
 }
-@keyframes pulse { 50% { transform: scale(1.15); } }
+@keyframes pulse { 50% { transform: scale(1.12); } }
 
 /* Ready Overlay */
 #ready-overlay {
@@ -119,15 +119,10 @@ button:hover {
     color: #0ff;
 }
 
-/* Game Over */
-#game-over-screen button {
-    border-color: #4CAF50;
-}
-
 /* ====================== GAME SCREEN ====================== */
 #game-screen { 
     background: #F4D9A0 !important; 
 }
 body { 
     background: #E8C9A0; 
-}
+    }
