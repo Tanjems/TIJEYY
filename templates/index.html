@@ -11,6 +11,7 @@
         <h1 class="title">PING PONG<br>LAN MULTIPLAYER</h1>
         <button onclick="createGame()">Create Game</button>
         <button onclick="showJoinScreen()">Join Game</button>
+        <button onclick="showRules()" style="background:#4CAF50; border-color:#4CAF50;">HOW TO PLAY</button>
     </div>
 
     <div id="join-screen" class="screen">
@@ -63,6 +64,43 @@
         <h1 id="winner-text"></h1>
         <button onclick="playAgain()">Play Again</button>
         <button onclick="exitToMenu()">Exit to Menu</button>
+
+        <!-- HOW TO PLAY MODAL -->
+    <div id="rules-modal" style="position:fixed; top:0; left:0; width:100%; height:100%; 
+         background:rgba(0,0,0,0.9); display:none; align-items:center; justify-content:center; z-index:100;">
+        
+        <div style="background:#222; width:90%; max-width:520px; border-radius:20px; padding:30px; border:6px solid #4CAF50;">
+            <h2 style="text-align:center; color:#4CAF50; margin:0 0 25px 0; font-size:2.2rem;">HOW TO PLAY</h2>
+            
+            <div style="line-height:1.7; font-size:1.1rem; color:#ddd;">
+                <p><strong>1. Start the Game</strong><br>
+                Create a room or join with a 4-digit code. Both players must click "I'M READY" to begin.</p>
+                
+                <p><strong>2. Controls</strong><br>
+                • Player 1 (Left): W = Up, S = Down<br>
+                • Player 2 (Right): ↑ Arrow = Up, ↓ Arrow = Down<br>
+                • Mobile: Drag finger up/down on the screen</p>
+                
+                <p><strong>3. Scoring</strong><br>
+                First player to reach <strong>5 points</strong> wins.<br>
+                After every point, both players must click "I'M READY" again.</p>
+                
+                <p><strong>4. Pause</strong><br>
+                Click the ⏸ PAUSE button anytime.</p>
+                
+                <p><strong>5. Win Condition</strong><br>
+                The first to 5 points wins the match.</p>
+            </div>
+
+            <div style="text-align:center; margin-top:30px;">
+                <button onclick="hideRules()" style="background:#4CAF50; color:#000; font-size:1.4rem; 
+                     padding:15px 60px; border:none; border-radius:12px; cursor:pointer;">
+                    OK
+                </button>
+            </div>
+        </div>
+    </div>
+        
     </div>
 
     <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
