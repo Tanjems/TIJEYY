@@ -37,9 +37,12 @@ function updateOwnPaddle() {
     if (!mySide || !myRoom || !gameState) return;
 
     const key = mySide === 'left' ? 'paddle1_y' : 'paddle2_y';
-    let y = gameState[key] || 250;
+    
+    // Get current position (with fallback)
+    let y = gameState[key] ?? 250;
     const speed = 8;
 
+    // Apply input
     if (mySide === 'left') {
         if (keys['w']) y -= speed;
         if (keys['s']) y += speed;
@@ -49,13 +52,15 @@ function updateOwnPaddle() {
     }
     y += touchDirection * speed;
 
-    y = Math.max(0, Math.min(500, y));   // strong clamp
+    // CLAMP FIRST - prevents any invalid values
+    y = Math.max(0, Math.min(500, y));
+    
+    // IMMEDIATELY store locally BEFORE sending to server
+    gameState[key] = y;
 
-    gameState[key] = y;                   // always update locally first
-
-    socket.emit('update_paddle', {room: myRoom, y: Math.round(y)});
+    // Send to server (server will clamp again, but we already did it)
+    socket.emit('update_paddle', {room: myRoom, y: y});
 }
-
 function updateBallLocally() {
     if (!gameState || typeof gameState.ball_vx === 'undefined') return;
     
