@@ -40,22 +40,20 @@ socket.on('countdown', (d) => {
 });
 
 socket.on('game_update', (state) => {
-    if (!state) return;
+    if (!state || !mySide) return;
 
     const myPaddleKey = mySide === 'left' ? 'paddle1_y' : 'paddle2_y';
     
-    // 🔒 CRITICAL: Save local paddle BEFORE any server data
-    const mySafeY = gameState[myPaddleKey] ?? 250;
-
-    // Copy server data but REMOVE my paddle
-    const cleanState = { ...state };
-    delete cleanState[myPaddleKey];
-
-    // Apply safe server data
-    Object.assign(gameState, cleanState);
-
-    // 🔒 RESTORE local paddle - ALWAYS
-    gameState[myPaddleKey] = Math.max(0, Math.min(500, mySafeY));
+    // 🛡️ PRESERVE LOCAL PADDLE - CRITICAL!
+    const localPaddleY = gameState[myPaddleKey];
+    
+    // Copy ALL server data
+    Object.assign(gameState, state);
+    
+    // 🛡️ RESTORE LOCAL PADDLE - IMMEDIATELY AFTER!
+    if (localPaddleY !== undefined && localPaddleY !== null) {
+        gameState[myPaddleKey] = Math.max(0, Math.min(500, localPaddleY));
+    }
 });
 
 socket.on('game_over', (d) => {
