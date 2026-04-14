@@ -173,7 +173,13 @@ def handle_update_paddle(data):
     if room in rooms and sid in rooms[room]['players']:
         side = rooms[room]['players'][sid]['side']
         key = 'paddle1_y' if side == 'left' else 'paddle2_y'
-        rooms[room]['game_state'][key] = max(0, min(500, y))
+        
+        # SMOOTH SERVER-SIDE TOO
+        current_y = rooms[room]['game_state'][key]
+        target_y = max(0, min(500, y))
+        smoothed_y = current_y + (target_y - current_y) * 0.3
+        
+        rooms[room]['game_state'][key] = max(0, min(500, smoothed_y))
 
 @socketio.on('restart_game')
 def handle_restart(data):
