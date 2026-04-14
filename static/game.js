@@ -3,32 +3,32 @@ let keys = {};
 let touchDirection = 0;
 
 function initGame() {
-    canvas = document.getElementById('game-canvas');
-    ctx = canvas.getContext('2d');
+canvas = document.getElementById('game-canvas');
+ctx = canvas.getContext('2d');
 
-    // ORIGINAL KEY SYSTEM - WORKS PERFECTLY
-    document.addEventListener('keydown', e => keys[e.key.toLowerCase()] = true);
-    document.addEventListener('keyup', e => keys[e.key.toLowerCase()] = false);
 
-    // Touch/mobile - unchanged
-    canvas.addEventListener('touchstart', e => { 
-        e.preventDefault(); 
-        const rect = canvas.getBoundingClientRect();
-        const y = e.touches[0].clientY - rect.top; 
-        touchDirection = y < 300 ? -1 : 1; 
-    }, {passive: false});
+document.addEventListener('keydown', e => keys[e.key.toLowerCase()] = true);
+document.addEventListener('keyup',   e => keys[e.key.toLowerCase()] = false);
 
-    canvas.addEventListener('touchmove', e => { 
-        e.preventDefault(); 
-        const rect = canvas.getBoundingClientRect();
-        const y = e.touches[0].clientY - rect.top; 
-        touchDirection = y < 300 ? -1 : 1; 
-    }, {passive: false});
+canvas.addEventListener('touchstart', e => { 
+    e.preventDefault(); 
+    const y = e.touches[0].clientY - canvas.getBoundingClientRect().top; 
+    touchDirection = y < 300 ? -1 : 1; 
+}, {passive:false});
 
-    canvas.addEventListener('touchend', () => touchDirection = 0);
+canvas.addEventListener('touchmove', e => { 
+    e.preventDefault(); 
+    const y = e.touches[0].clientY - canvas.getBoundingClientRect().top; 
+    touchDirection = y < 300 ? -1 : 1; 
+}, {passive:false});
 
-    gameLoop();
+canvas.addEventListener('touchend', () => touchDirection = 0);
+
+gameLoop();
+
 }
+
+
 
 function gameLoop() {
     updateOwnPaddle();
