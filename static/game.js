@@ -37,30 +37,30 @@ function updateOwnPaddle() {
     if (!mySide || !myRoom || !gameState) return;
 
     const key = mySide === 'left' ? 'paddle1_y' : 'paddle2_y';
-    
-    // Get current position (with fallback)
-    let y = gameState[key] ?? 250;
+    let targetY = gameState[key] ?? 250;
     const speed = 8;
 
-    // Apply input
+    // Calculate target from input
     if (mySide === 'left') {
-        if (keys['w']) y -= speed;
-        if (keys['s']) y += speed;
+        if (keys['w']) targetY -= speed;
+        if (keys['s']) targetY += speed;
     } else {
-        if (keys['arrowup']) y -= speed;
-        if (keys['arrowdown']) y += speed;
+        if (keys['arrowup']) targetY -= speed;
+        if (keys['arrowdown']) targetY += speed;
     }
-    y += touchDirection * speed;
+    targetY += touchDirection * speed;
 
-    // CLAMP FIRST - prevents any invalid values
-    y = Math.max(0, Math.min(500, y));
+    // ULTRA-SAFE CLAMP
+    targetY = Math.max(0, Math.min(500, targetY));
     
-    // IMMEDIATELY store locally BEFORE sending to server
-    gameState[key] = y;
-
-    // Send to server (server will clamp again, but we already did it)
-    socket.emit('update_paddle', {room: myRoom, y: y});
+    // SMOOTH INTERPOLATION - prevents snapping
+    const currentY = gameState[key] ?? 250;
+    gameState[key] = currentY + (targetY - currentY) * 0.4;
+    
+    // Send clamped target (not interpolated)
+    socket.emit('update_paddle', {room: myRoom, y: Math.round(targetY)});
 }
+
 function updateBallLocally() {
     if (!gameState || typeof gameState.ball_vx === 'undefined') return;
     
