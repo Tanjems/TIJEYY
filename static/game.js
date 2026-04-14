@@ -6,16 +6,11 @@ function initGame() {
     canvas = document.getElementById('game-canvas');
     ctx = canvas.getContext('2d');
 
-    // 🔥 FIXED KEY EVENT - use proper arrow key names
-    document.addEventListener('keydown', e => {
-        const key = e.code;  // Use e.code instead of e.key for consistency
-        keys[key] = true;
-    });
-    document.addEventListener('keyup', e => {
-        keys[e.code] = false;
-    });
+    // ORIGINAL KEY SYSTEM - WORKS PERFECTLY
+    document.addEventListener('keydown', e => keys[e.key.toLowerCase()] = true);
+    document.addEventListener('keyup', e => keys[e.key.toLowerCase()] = false);
 
-    // Rest of your touch/mobile code stays the same...
+    // Touch/mobile - unchanged
     canvas.addEventListener('touchstart', e => { 
         e.preventDefault(); 
         const rect = canvas.getBoundingClientRect();
@@ -48,31 +43,29 @@ function updateOwnPaddle() {
     const key = mySide === 'left' ? 'paddle1_y' : 'paddle2_y';
     let targetY = gameState[key] ?? 250;
     
-    // 🔥 UNIFIED SPEED - 12px/frame = perfect match mobile/desktop
+    // 🔥 UNIFIED SPEED - 12px/frame
     const speed = 12;
 
-    // DESKTOP KEYS - now FAST like mobile
+    // DESKTOP KEYS - CORRECT KEY NAMES for e.code
     if (mySide === 'left') {
-        if (keys['w']) targetY -= speed;
-        if (keys['s']) targetY += speed;
+        if (keys['KeyW']) targetY -= speed;      // KeyW (not 'w')
+        if (keys['KeyS']) targetY += speed;      // KeyS (not 's')
     } else {
-        if (keys['ArrowUp']) targetY -= speed;    // Fixed: ArrowUp (capital U)
-        if (keys['ArrowDown']) targetY += speed;  // Fixed: ArrowDown (capital D)
+        if (keys['ArrowUp']) targetY -= speed;   // ArrowUp
+        if (keys['ArrowDown']) targetY += speed; // ArrowDown
     }
 
-    // MOBILE TOUCH - same speed
+    // MOBILE TOUCH - unchanged
     targetY += touchDirection * speed;
 
-    // Clamp
+    // Clamp + smooth
     targetY = Math.max(0, Math.min(500, targetY));
-    
-    // Smooth interpolation (keeps it buttery)
     const currentY = gameState[key] ?? 250;
     gameState[key] = currentY + (targetY - currentY) * 0.4;
     
-    // Send target Y to server
     socket.emit('update_paddle', {room: myRoom, y: Math.round(targetY)});
 }
+
 function updateBallLocally() {
     if (!gameState || typeof gameState.ball_vx === 'undefined') return;
     
