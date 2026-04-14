@@ -102,7 +102,8 @@ def handle_create_game():
                        'paddle1_y': 250, 'paddle2_y': 250, 'score1': 0, 'score2': 0},
         'running': False,
         'paused': False,
-        'ready_players': set()
+        'ready_players': set(),
+        'game_loop_task': None  # ← NEW: track the task
     }
     join_room(room)
     emit('room_created', {'room': room}, to=sid)
@@ -123,17 +124,25 @@ def handle_join_game(data):
         emit('join_error', {'message': 'Invalid or full room code'}, to=request.sid)
 
 def countdown_and_start(room):
+    # 🛑 STOP ANY EXISTING GAME LOOP
+    if rooms[room].get('game_loop_task'):
+        # Mark as stopped
+        rooms[room]['running'] = False
+    
+    # Countdown...
     for i in range(3, 0, -1):
         socketio.emit('countdown', {'number': str(i)}, room=room)
         socketio.sleep(1)
     socketio.emit('countdown', {'number': 'GO!'}, room=room)
     socketio.sleep(0.8)
     
+    # Reset state
     rooms[room]['running'] = True
+    rooms[room]['paused'] = False
     rooms[room]['ready_players'] = set()
-    socketio.start_background_task(game_loop, room)
+    rooms[room]['game_loop_task'] = socketio.start_background_task(game_loop, room)
     socketio.emit('show_ready_buttons', room=room)
-
+    
 @socketio.on('player_ready')
 def handle_player_ready(data):
     room = data.get('room')
@@ -185,12 +194,17 @@ def handle_update_paddle(data):
 def handle_restart(data):
     room = data.get('room')
     if room in rooms:
+        # 🛑 STOP CURRENT LOOP
+        rooms[room]['running'] = False
+        
+        # Reset everything
         state = rooms[room]['game_state']
         state['score1'] = state['score2'] = 0
         reset_ball(state)
-        rooms[room]['running'] = False
         rooms[room]['paused'] = False
         rooms[room]['ready_players'] = set()
+        
+        # RESTART COUNTDOWN (will create new loop)
         socketio.start_background_task(countdown_and_start, room)
 
 @socketio.on('leave_game')
