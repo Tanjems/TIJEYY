@@ -38,29 +38,32 @@ function updateOwnPaddle() {
 
     const key = mySide === 'left' ? 'paddle1_y' : 'paddle2_y';
     let targetY = gameState[key] ?? 250;
-    const speed = 8;
+    
+    // 🔥 UNIFIED SPEED - 12px/frame = perfect match mobile/desktop
+    const speed = 12;
 
-    // Calculate target from input
+    // DESKTOP KEYS - now FAST like mobile
     if (mySide === 'left') {
         if (keys['w']) targetY -= speed;
         if (keys['s']) targetY += speed;
     } else {
-        if (keys['arrowup']) targetY -= speed;
-        if (keys['arrowdown']) targetY += speed;
+        if (keys['ArrowUp']) targetY -= speed;    // Fixed: ArrowUp (capital U)
+        if (keys['ArrowDown']) targetY += speed;  // Fixed: ArrowDown (capital D)
     }
+
+    // MOBILE TOUCH - same speed
     targetY += touchDirection * speed;
 
-    // ULTRA-SAFE CLAMP
+    // Clamp
     targetY = Math.max(0, Math.min(500, targetY));
     
-    // SMOOTH INTERPOLATION - prevents snapping
+    // Smooth interpolation (keeps it buttery)
     const currentY = gameState[key] ?? 250;
     gameState[key] = currentY + (targetY - currentY) * 0.4;
     
-    // Send clamped target (not interpolated)
+    // Send target Y to server
     socket.emit('update_paddle', {room: myRoom, y: Math.round(targetY)});
 }
-
 function updateBallLocally() {
     if (!gameState || typeof gameState.ball_vx === 'undefined') return;
     
