@@ -66,18 +66,20 @@
         <button onclick="exitToMenu()">Exit to Menu</button>
     </div>
 
-<!-- ==================== HOW TO PLAY MODAL (Working Transparent Version) ==================== -->
+<!-- ==================== HOW TO PLAY MODAL (Fixed for Laptop) ==================== -->
 <div id="howtoplay-screen" style="position:fixed; top:0; left:0; width:100%; height:100%; 
      background:rgba(0,0,0,0.58); display:none; align-items:center; justify-content:center; z-index:100;">
     
-    <div style="background:#1e2a1f; width:90%; max-width:560px; border-radius:20px; padding:35px; 
-                border:6px solid #4CAF50; color:#fff; box-shadow:0 0 80px rgba(76,175,80,0.6);">
+    <div style="background:#1e2a1f; width:90%; max-width:560px; max-height:85vh; 
+                border-radius:20px; padding:25px 30px; border:6px solid #4CAF50; 
+                color:#fff; box-shadow:0 0 80px rgba(76,175,80,0.6); 
+                overflow-y:auto; display:flex; flex-direction:column;">
         
-        <h2 style="text-align:center; color:#4CAF50; margin:0 0 30px 0; font-size:2.5rem;">
+        <h2 style="text-align:center; color:#4CAF50; margin:0 0 25px 0; font-size:2.3rem;">
             HOW TO PLAY
         </h2>
         
-        <div style="line-height:1.75; font-size:1.15rem; color:#ddd;">
+        <div style="line-height:1.75; font-size:1.1rem; color:#ddd; flex:1;">
             <p><strong>1. Starting the Game</strong><br>
             One player clicks <strong>Create Game</strong> to generate a 4-digit room code.<br>
             The second player clicks <strong>Join Game</strong> and enters the code.<br>
@@ -101,7 +103,7 @@
             You can immediately start a new match by clicking <strong>Play Again</strong>.</p>
         </div>
 
-        <div style="text-align:center; margin-top:35px;">
+        <div style="text-align:center; margin-top:25px; padding-top:15px; border-top:1px solid #444;">
             <button onclick="hideHowToPlay()" 
                     style="background:#4CAF50; color:#000; font-size:1.6rem; padding:16px 70px; 
                            border:none; border-radius:12px; cursor:pointer; font-weight:bold;">
