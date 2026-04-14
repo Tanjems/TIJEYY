@@ -34,8 +34,15 @@ def start_ball(state):
     state['ball_vy'] = random.randint(-4, 4)
 
 def game_loop(room):
-    if room not in rooms: return
+    if room not in rooms: 
+        return
+        
     state = rooms[room]['game_state']
+    
+    # 🔥 1-LINE FIX: Exit if not actually running
+    if not rooms[room].get('running', False):
+        return
+        
     print(f"===== GAME LOOP STARTED for room {room} =====")
     
     while rooms[room].get('running', False) and not rooms[room].get('paused', False):
@@ -64,7 +71,7 @@ def game_loop(room):
         # Scoring
         if state['ball_x'] < 0:
             state['score2'] += 1
-            reset_ball(state, serve_side='right')   # Player 2 scored → next serve from right
+            reset_ball(state, serve_side='right')
             rooms[room]['ready_players'] = set()
             socketio.emit('point_scored', state, room=room)
             socketio.sleep(0.8)
@@ -75,7 +82,7 @@ def game_loop(room):
 
         elif state['ball_x'] > 800:
             state['score1'] += 1
-            reset_ball(state, serve_side='left')    # Player 1 scored → next serve from left
+            reset_ball(state, serve_side='left')
             rooms[room]['ready_players'] = set()
             socketio.emit('point_scored', state, room=room)
             socketio.sleep(0.8)
@@ -84,7 +91,7 @@ def game_loop(room):
                 rooms[room]['running'] = False
                 break
 
-        socketio.emit('game_update', state, room=room)   # ← FIXED
+        socketio.emit('game_update', state, room=room)
         socketio.sleep(0.0167)
 
 @app.route('/')
