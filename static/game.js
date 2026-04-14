@@ -6,20 +6,29 @@ function initGame() {
     canvas = document.getElementById('game-canvas');
     ctx = canvas.getContext('2d');
 
-    document.addEventListener('keydown', e => keys[e.key.toLowerCase()] = true);
-    document.addEventListener('keyup',   e => keys[e.key.toLowerCase()] = false);
+    // 🔥 FIXED KEY EVENT - use proper arrow key names
+    document.addEventListener('keydown', e => {
+        const key = e.code;  // Use e.code instead of e.key for consistency
+        keys[key] = true;
+    });
+    document.addEventListener('keyup', e => {
+        keys[e.code] = false;
+    });
 
+    // Rest of your touch/mobile code stays the same...
     canvas.addEventListener('touchstart', e => { 
         e.preventDefault(); 
-        const y = e.touches[0].clientY - canvas.getBoundingClientRect().top; 
+        const rect = canvas.getBoundingClientRect();
+        const y = e.touches[0].clientY - rect.top; 
         touchDirection = y < 300 ? -1 : 1; 
-    }, {passive:false});
+    }, {passive: false});
 
     canvas.addEventListener('touchmove', e => { 
         e.preventDefault(); 
-        const y = e.touches[0].clientY - canvas.getBoundingClientRect().top; 
+        const rect = canvas.getBoundingClientRect();
+        const y = e.touches[0].clientY - rect.top; 
         touchDirection = y < 300 ? -1 : 1; 
-    }, {passive:false});
+    }, {passive: false});
 
     canvas.addEventListener('touchend', () => touchDirection = 0);
 
