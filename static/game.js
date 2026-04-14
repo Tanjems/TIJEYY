@@ -28,8 +28,6 @@ gameLoop();
 
 }
 
-
-
 function gameLoop() {
     updateOwnPaddle();
     updateBallLocally();
@@ -42,27 +40,26 @@ function updateOwnPaddle() {
 
     const key = mySide === 'left' ? 'paddle1_y' : 'paddle2_y';
     let targetY = gameState[key] ?? 250;
-    
-    // 🔥 UNIFIED SPEED - 12px/frame
-    const speed = 12;
+    const speed = 8;
 
-    // DESKTOP KEYS - CORRECT KEY NAMES for e.code
+    // Calculate target from input
     if (mySide === 'left') {
-        if (keys['KeyW']) targetY -= speed;      // KeyW (not 'w')
-        if (keys['KeyS']) targetY += speed;      // KeyS (not 's')
+        if (keys['w']) targetY -= speed;
+        if (keys['s']) targetY += speed;
     } else {
-        if (keys['ArrowUp']) targetY -= speed;   // ArrowUp
-        if (keys['ArrowDown']) targetY += speed; // ArrowDown
+        if (keys['arrowup']) targetY -= speed;
+        if (keys['arrowdown']) targetY += speed;
     }
-
-    // MOBILE TOUCH - unchanged
     targetY += touchDirection * speed;
 
-    // Clamp + smooth
+    // ULTRA-SAFE CLAMP
     targetY = Math.max(0, Math.min(500, targetY));
+    
+    // SMOOTH INTERPOLATION - prevents snapping
     const currentY = gameState[key] ?? 250;
     gameState[key] = currentY + (targetY - currentY) * 0.4;
     
+    // Send clamped target (not interpolated)
     socket.emit('update_paddle', {room: myRoom, y: Math.round(targetY)});
 }
 
