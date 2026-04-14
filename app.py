@@ -201,19 +201,18 @@ def handle_update_paddle(data):
 def handle_restart(data):
     room = data.get('room')
     if room in rooms:
-        # 🛑 STOP CURRENT LOOP
+        # 🔥 STOP ALL OLD GAME LOOPS INSTANTLY
         rooms[room]['running'] = False
         
-        # Reset everything
         state = rooms[room]['game_state']
         state['score1'] = state['score2'] = 0
         reset_ball(state)
         rooms[room]['paused'] = False
         rooms[room]['ready_players'] = set()
         
-        # RESTART COUNTDOWN (will create new loop)
+        # Start FRESH game
         socketio.start_background_task(countdown_and_start, room)
-
+        
 @socketio.on('leave_game')
 def handle_leave_game(data):
     room = data.get('room')
