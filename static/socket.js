@@ -44,20 +44,18 @@ socket.on('game_update', (state) => {
 
     const myPaddleKey = mySide === 'left' ? 'paddle1_y' : 'paddle2_y';
     
-    // Save your current local paddle position
-    const myCurrentY = gameState[myPaddleKey];
+    // 🔒 CRITICAL: Save local paddle BEFORE any server data
+    const mySafeY = gameState[myPaddleKey] ?? 250;
 
-    // Create a copy of server data and REMOVE the server's version of YOUR paddle
+    // Copy server data but REMOVE my paddle
     const cleanState = { ...state };
-    delete cleanState[myPaddleKey];               // ← This is the key line
+    delete cleanState[myPaddleKey];
 
-    // Apply only the safe data from server
+    // Apply safe server data
     Object.assign(gameState, cleanState);
 
-    // Force restore your local paddle (prevents any teleport at top edge)
-    if (myCurrentY !== undefined) {
-        gameState[myPaddleKey] = Math.max(0, Math.min(500, myCurrentY));
-    }
+    // 🔒 RESTORE local paddle - ALWAYS
+    gameState[myPaddleKey] = Math.max(0, Math.min(500, mySafeY));
 });
 
 socket.on('game_over', (d) => {
