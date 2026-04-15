@@ -193,7 +193,7 @@ def handle_update_paddle(data):
         # SMOOTH SERVER-SIDE TOO
         current_y = rooms[room]['game_state'][key]
         target_y = max(0, min(500, y))
-        smoothed_y = current_y + (target_y - current_y) * 0.3
+        smoothed_y = current_y + (target_y - current_y) * 0.7
         
         rooms[room]['game_state'][key] = max(0, min(500, smoothed_y))
 
